@@ -1,9 +1,54 @@
 
 const axios = require("axios");
 const cheerio = require("cheerio");
+const { createClient } = require("@supabase/supabase-js");
+
+// === SUPABASE SETUP ===
+// Replace these with your actual project details
+const SUPABASE_URL = "https://gocvjqljtcxtcrwvfwez.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvY3ZqcWxqdGN4dGNyd3Zmd2V6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc0NTQzMzUsImV4cCI6MjA2MzAzMDMzNX0.R0NQtfvSeekfHR-QE8l5bPf7f_vL1_ol-SFVjdWRQxI";
+
+// This is the UUID of the Utah Go group in your Supabase "groups" table.
+// Replace with the correct ID from your database!
+const UTAH_GO_GROUP_ID = "REPLACE_WITH_ACTUAL_GROUP_UUID";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // The Meetup events page for Utah Go
 const MEETUP_URL = "https://www.meetup.com/utahgophers/events/";
+
+function extractEventId(link) {
+  // Meetup event URLs contain the event ID: /events/<id>/
+  if (!link) return null;
+  const match = link.match(/\/events\/(\d+)/);
+  return match ? match[1] : null;
+}
+
+async function upsertEvent(event) {
+  if (!event.external_id) {
+    console.warn("Skipping event without external_id:", event.title);
+    return;
+  }
+  // Insert or update by (group_id, external_id) constraint
+  const { error } = await supabase
+    .from("events")
+    .upsert([{
+      group_id: UTAH_GO_GROUP_ID,
+      title: event.title,
+      event_date: event.event_date,
+      start_time: event.start_time,
+      location: event.location,
+      status: "approved",
+      description: event.description,
+      link: event.link,
+      external_id: event.external_id
+    }], { onConflict: "group_id,external_id" });
+  if (error) {
+    console.error(`Error upserting "${event.title}": ${error.message}`);
+  } else {
+    console.log(`Upserted: "${event.title}"`);
+  }
+}
 
 async function scrapeMeetupEvents() {
   try {
@@ -33,23 +78,44 @@ async function scrapeMeetupEvents() {
       const relLink = $(this).find("a[href*='/events/']").attr("href");
       event.link = relLink ? `https://www.meetup.com${relLink}` : null;
 
+      // Get external_id from link
+      event.external_id = extractEventId(relLink);
+
       // Get event date
-      event.date = $(this).find("time").attr("datetime") || $(this).find("time").text();
+      // Try to parse date as ISO (yyyy-mm-dd), fallback to text
+      const dateStr = $(this).find("time").attr("datetime") || $(this).find("time").text();
+      if (dateStr) {
+        event.event_date = dateStr.split("T")[0];
+        event.start_time = dateStr.includes("T") ? dateStr.split("T")[1]?.slice(0, 5) : null;
+      }
 
       // Get event description (if available)
       event.description = $(this).find("p").text().trim();
 
-      // Filter only if an event title is present
-      if (event.title) {
+      // Meetup does not directly list city, so try scraping a "location" string if present
+      event.location = $(this).find("[data-testid='event-card-location']").text().trim() ||
+        $(this).find("span:contains('Location')").parent().text().replace('Location', '').trim();
+
+      // Filter only if an event title and external_id is present
+      if (event.title && event.external_id) {
         events.push(event);
       }
     });
 
-    // Print as JSON
-    console.log(JSON.stringify(events, null, 2));
+    if (events.length === 0) {
+      console.log("No events found to upsert.");
+      return;
+    }
+
+    // Upsert all events sequentially for robust error reporting
+    for (const event of events) {
+      await upsertEvent(event);
+    }
+    console.log(`Finished upserting ${events.length} events.`);
   } catch (err) {
     console.error("Failed to fetch or scrape Meetup events:", err.message);
   }
 }
 
 scrapeMeetupEvents();
+
