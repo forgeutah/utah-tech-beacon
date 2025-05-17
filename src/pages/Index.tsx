@@ -1,4 +1,4 @@
-import { CalendarDays, Github } from "lucide-react";
+import { CalendarDays, Github, Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import React from "react";
