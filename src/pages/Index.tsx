@@ -2,6 +2,8 @@ import { CalendarDays, Github, Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import React from "react";
+import AddEventModal from "@/components/AddEventModal";
+import { useState } from "react";
 
 // Fetch upcoming events and their groups from Supabase
 async function fetchUpcomingEvents() {
@@ -32,6 +34,8 @@ const Index = () => {
     queryKey: ["upcoming-events"],
     queryFn: fetchUpcomingEvents,
   });
+
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#1A1F2C] to-[#23283B]">
@@ -70,10 +74,14 @@ const Index = () => {
           across Utah. Powered by{" "}
           <span className="text-white font-bold">Forge Utah Foundation</span>.
         </p>
-        <button className="group flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-black font-semibold shadow-lg hover:scale-105 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 animate-fade-in">
+        <button
+          className="group flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-black font-semibold shadow-lg hover:scale-105 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 animate-fade-in"
+          onClick={() => setShowModal(true)}
+        >
           <Plus className="w-5 h-5" />
           Add Event
         </button>
+        <AddEventModal open={showModal} onOpenChange={setShowModal} />
       </section>
 
       {/* UPCOMING EVENTS PREVIEW */}

@@ -20,6 +20,7 @@ export type Database = {
           link: string | null
           location: string | null
           start_time: string | null
+          status: string
           title: string
         }
         Insert: {
@@ -32,6 +33,7 @@ export type Database = {
           link?: string | null
           location?: string | null
           start_time?: string | null
+          status?: string
           title: string
         }
         Update: {
@@ -44,6 +46,7 @@ export type Database = {
           link?: string | null
           location?: string | null
           start_time?: string | null
+          status?: string
           title?: string
         }
         Relationships: [
@@ -62,7 +65,10 @@ export type Database = {
           description: string | null
           id: string
           location: string | null
+          luma_link: string | null
+          meetup_link: string | null
           name: string
+          status: string
           website: string | null
         }
         Insert: {
@@ -70,7 +76,10 @@ export type Database = {
           description?: string | null
           id?: string
           location?: string | null
+          luma_link?: string | null
+          meetup_link?: string | null
           name: string
+          status?: string
           website?: string | null
         }
         Update: {
@@ -78,7 +87,10 @@ export type Database = {
           description?: string | null
           id?: string
           location?: string | null
+          luma_link?: string | null
+          meetup_link?: string | null
           name?: string
+          status?: string
           website?: string | null
         }
         Relationships: []
