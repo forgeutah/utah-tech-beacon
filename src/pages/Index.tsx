@@ -1,3 +1,4 @@
+
 import { CalendarDays, Github, Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -5,7 +6,7 @@ import React from "react";
 import AddEventModal from "@/components/AddEventModal";
 import { useState } from "react";
 
-// Fetch upcoming events and their groups from Supabase
+// Fetch only approved upcoming events and their approved groups from Supabase
 async function fetchUpcomingEvents() {
   // Select events & join groups for group names.
   const { data, error } = await supabase
@@ -16,11 +17,14 @@ async function fetchUpcomingEvents() {
       event_date,
       start_time,
       location,
+      status,
       group_id,
       groups (
-        name
+        name,
+        status
       )
     `)
+    .eq("status", "approved")
     .order("event_date", { ascending: true })
     .order("start_time", { ascending: true })
     .limit(10); // Gets next 10 events
@@ -115,15 +119,22 @@ const Index = () => {
                     </td>
                   </tr>
                 )}
-                {!isLoading && !error && events && events.length === 0 && (
+                {!isLoading && !error && events && events.filter((event: any) => {
+                  // Only show event if group is null (unlisted) or group.status is approved
+                  return !event.groups || event.groups.status === "approved";
+                }).length === 0 && (
                   <tr>
                     <td colSpan={3} className="py-3 text-center text-muted-foreground">
                       No events yet.
                     </td>
                   </tr>
                 )}
-                {!isLoading && events &&
-                  events.map((event: any) => (
+                {!isLoading && events && events
+                  .filter((event: any) => {
+                    // Only show event if group is null (unlisted) or group.status is approved
+                    return !event.groups || event.groups.status === "approved";
+                  })
+                  .map((event: any) => (
                     <tr key={event.id} className="border-b border-border hover:bg-white/5 transition">
                       {/* Event Title */}
                       <td className="py-3 px-3 text-white font-medium">{event.title}</td>
