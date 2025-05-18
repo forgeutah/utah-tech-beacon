@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -35,6 +34,12 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
       setGroupData({ name: "", meetup_link: "", luma_link: "" });
     }, 200);
   };
+
+  // Add validator step
+  type ValidatorStep = "form" | "validator" | "confirmed";
+  const [validatorStep, setValidatorStep] = useState<ValidatorStep>("form");
+  const [scrapedEvents, setScrapedEvents] = useState<any[]>([]);
+  const [scrapeError, setScrapeError] = useState<string>("");
 
   // HANDLERS
   async function handleEventSubmit(e: React.FormEvent) {
@@ -92,20 +97,67 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
   async function handleGroupSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsSubmitting(true);
-    const { error } = await supabase
+
+    // Scrape events before submitting group
+    try {
+      setScrapeError("");
+      setScrapedEvents([]);
+
+      const res = await fetch("/functions/v1/scrape-events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          meetup_link: groupData.meetup_link,
+          luma_link: groupData.luma_link,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to scrape events. Please double check your link.");
+      }
+      const data = await res.json();
+      setScrapedEvents(data.events || []);
+      setValidatorStep("validator");
+    } catch (err: any) {
+      setScrapeError(err.message || "Unknown error scraping events.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function handleApproveGroup() {
+    setIsSubmitting(true);
+    // Insert group
+    const { data: group, error } = await supabase
       .from("groups")
       .insert({
         name: groupData.name,
         meetup_link: groupData.meetup_link,
         luma_link: groupData.luma_link,
         status: "pending",
-      });
+      }).select().single();
+
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Group submitted!", description: "Your group is pending approval.", variant: "default" });
-      handleClose();
+      setIsSubmitting(false);
+      return;
     }
+    // Insert events
+    for (const e of scrapedEvents) {
+      await supabase.from("events").insert({
+        title: e.title,
+        group_id: group.id,
+        event_date: e.event_date,
+        start_time: e.start_time,
+        location: e.location,
+        status: "pending",
+        description: e.description,
+        link: e.link,
+        external_id: e.external_id
+      });
+    }
+    toast({ title: "Group submitted!", description: "Your group is pending approval along with the next 3 events.", variant: "default" });
+    handleClose();
+    setValidatorStep("confirmed");
     setIsSubmitting(false);
   }
 
@@ -116,15 +168,17 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
         <DialogHeader>
           <DialogTitle>Add Event or Group</DialogTitle>
           <DialogDescription>
+            {/* ... adjust as appropriate for validator step */}
             {step === 1
               ? "Start by telling us what you're adding:"
               : step === 2 && eventType === "one-time"
                 ? "Enter the details for your one-time event."
                 : step === 2 && eventType === "recurring-group"
-                  ? "Enter your group details and a link for recurring events."
+                  ? "Enter your group details and we'll preview your next events."
                   : ""}
           </DialogDescription>
         </DialogHeader>
+
         {step === 1 && (
           <div className="flex flex-col gap-4">
             <Button
@@ -194,33 +248,67 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
           </form>
         )}
 
+        {/* Step 2 - Recurring group - changed to use validatorStep */}
         {step === 2 && eventType === "recurring-group" && (
-          <form onSubmit={handleGroupSubmit} className="flex flex-col gap-3">
-            <Input
-              placeholder="Group Name"
-              value={groupData.name}
-              required
-              onChange={e => setGroupData(v => ({ ...v, name: e.target.value }))}
-            />
-            <Input
-              placeholder="Meetup.com Link (optional)"
-              value={groupData.meetup_link}
-              onChange={e => setGroupData(v => ({ ...v, meetup_link: e.target.value }))}
-            />
-            <Input
-              placeholder="Luma Link (optional)"
-              value={groupData.luma_link}
-              onChange={e => setGroupData(v => ({ ...v, luma_link: e.target.value }))}
-            />
-            <DialogFooter>
-              <Button variant="outline" type="button" onClick={() => setStep(1)}>
-                Back
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                Submit
-              </Button>
-            </DialogFooter>
-          </form>
+          <>
+            {validatorStep === "form" && (
+              <form onSubmit={handleGroupSubmit} className="flex flex-col gap-3">
+                <Input
+                  placeholder="Group Name"
+                  value={groupData.name}
+                  required
+                  onChange={e => setGroupData(v => ({ ...v, name: e.target.value }))}
+                />
+                <Input
+                  placeholder="Meetup.com Link (optional)"
+                  value={groupData.meetup_link}
+                  onChange={e => setGroupData(v => ({ ...v, meetup_link: e.target.value }))}
+                />
+                <Input
+                  placeholder="Luma Link (optional)"
+                  value={groupData.luma_link}
+                  onChange={e => setGroupData(v => ({ ...v, luma_link: e.target.value }))}
+                />
+                {scrapeError && <div className="text-red-500">{scrapeError}</div>}
+                <DialogFooter>
+                  <Button variant="outline" type="button" onClick={() => setStep(1)}>
+                    Back
+                  </Button>
+                  <Button type="submit" disabled={isSubmitting}>
+                    Next
+                  </Button>
+                </DialogFooter>
+              </form>
+            )}
+            {validatorStep === "validator" && (
+              <div className="flex flex-col gap-4">
+                <div>
+                  <h4 className="font-semibold mb-1">Review scraped events for <span className="text-primary">{groupData.name}</span></h4>
+                  <ul className="space-y-1">
+                    {scrapedEvents.length > 0 ? (
+                      scrapedEvents.map((event, idx) => (
+                        <li key={idx} className="border rounded-md p-2 bg-muted/50">
+                          <div className="font-medium">{event.title}</div>
+                          <div className="text-xs">{event.event_date} {event.start_time && `at ${event.start_time}`}</div>
+                          <div className="text-xs text-muted-foreground">{event.location}</div>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="italic text-gray-500">No events found for this group.</li>
+                    )}
+                  </ul>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" type="button" onClick={() => setValidatorStep("form")} disabled={isSubmitting}>
+                    Back
+                  </Button>
+                  <Button onClick={handleApproveGroup} disabled={scrapedEvents.length === 0 || isSubmitting}>
+                    Submit for Approval
+                  </Button>
+                </DialogFooter>
+              </div>
+            )}
+          </>
         )}
       </DialogContent>
     </Dialog>
