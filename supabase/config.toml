@@ -1,1 +1,5 @@
+
 project_id = "gocvjqljtcxtcrwvfwez"
+
+[functions.scrape-events]
+verify_jwt = false

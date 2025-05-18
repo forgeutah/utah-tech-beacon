@@ -3,6 +3,11 @@ import { serve } from "https://deno.land/std@0.171.0/http/server.ts";
 import cheerio from "npm:cheerio@1.0.0-rc.12";
 import axios from "npm:axios@1.6.8";
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
 // Helper to extract event IDs from Meetup
 function extractEventId(link: string | null) {
   if (!link) return null;
@@ -11,6 +16,11 @@ function extractEventId(link: string | null) {
 }
 
 serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   try {
     const { meetup_link, luma_link } = await req.json();
     let events: any[] = [];
@@ -56,11 +66,15 @@ serve(async (req) => {
     // Future: add support for Luma, etc.
 
     // Cap to 3 events max
-    return new Response(JSON.stringify({ events: events.slice(0, 3) }), { status: 200 });
+    return new Response(JSON.stringify({ events: events.slice(0, 3) }), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" }
+    });
   } catch (err) {
+    console.error("Error in scrape-events:", err);
     return new Response(
       JSON.stringify({ message: "Failed to scrape events", error: err.message }),
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 });
