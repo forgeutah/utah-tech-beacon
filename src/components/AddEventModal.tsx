@@ -168,7 +168,6 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
         <DialogHeader>
           <DialogTitle>Add Event or Group</DialogTitle>
           <DialogDescription>
-            {/* ... adjust as appropriate for validator step */}
             {step === 1
               ? "Start by telling us what you're adding:"
               : step === 2 && eventType === "one-time"
@@ -184,25 +183,23 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
             <Button
               className={`w-full ${eventType === "one-time" ? "border-2 border-primary" : ""}`}
               variant="outline"
-              onClick={() => setEventType("one-time")}
+              onClick={() => {
+                setEventType("one-time");
+                setStep(2);
+              }}
             >
               One-time Event
             </Button>
             <Button
               className={`w-full ${eventType === "recurring-group" ? "border-2 border-primary" : ""}`}
               variant="outline"
-              onClick={() => setEventType("recurring-group")}
+              onClick={() => {
+                setEventType("recurring-group");
+                setStep(2);
+              }}
             >
               Recurring Group with Regular Events
             </Button>
-            <DialogFooter>
-              <Button
-                disabled={!eventType}
-                onClick={() => setStep(2)}
-              >
-                Next
-              </Button>
-            </DialogFooter>
           </div>
         )}
 
@@ -248,7 +245,6 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
           </form>
         )}
 
-        {/* Step 2 - Recurring group - changed to use validatorStep */}
         {step === 2 && eventType === "recurring-group" && (
           <>
             {validatorStep === "form" && (
