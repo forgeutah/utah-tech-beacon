@@ -1,5 +1,6 @@
 
 import React from "react";
+import { Tag } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -9,6 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 interface Event {
   id: string;
@@ -17,6 +19,7 @@ interface Event {
   start_time?: string;
   location?: string;
   description?: string;
+  tags?: string[];
   groups?: {
     name: string;
     status: string;
@@ -68,6 +71,7 @@ export function EventsTable({ events, isLoading, error, visibleCount, onShowMore
             <TableHead className="text-muted-foreground">Group</TableHead>
             <TableHead className="text-muted-foreground">Date & Time</TableHead>
             <TableHead className="text-muted-foreground">Location</TableHead>
+            <TableHead className="text-muted-foreground">Tags</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -112,6 +116,24 @@ export function EventsTable({ events, isLoading, error, visibleCount, onShowMore
               
               <TableCell className="text-muted-foreground">
                 {event.location || "TBD"}
+              </TableCell>
+              
+              <TableCell>
+                <div className="flex flex-wrap gap-1">
+                  {event.tags && event.tags.length > 0 ? (
+                    event.tags.map((tag, index) => (
+                      <Badge 
+                        key={index} 
+                        variant="outline" 
+                        className="text-xs bg-transparent border-primary text-primary px-2"
+                      >
+                        {tag}
+                      </Badge>
+                    ))
+                  ) : (
+                    <span className="text-xs text-muted-foreground italic">No tags</span>
+                  )}
+                </div>
               </TableCell>
             </TableRow>
           ))}

@@ -18,12 +18,14 @@ interface MultiSelectDropdownProps {
   groups: Group[];
   selectedGroups: string[];
   onSelectionChange: (groups: string[]) => void;
+  placeholder?: string;
 }
 
 export function MultiSelectDropdown({
   groups,
   selectedGroups,
   onSelectionChange,
+  placeholder = "Filter by groups"
 }: MultiSelectDropdownProps) {
   const [open, setOpen] = useState(false);
 
@@ -48,8 +50,8 @@ export function MultiSelectDropdown({
           >
             <span>
               {selectedGroups.length === 0 
-                ? "Filter by groups" 
-                : `${selectedGroups.length} group${selectedGroups.length > 1 ? 's' : ''} selected`
+                ? placeholder
+                : `${selectedGroups.length} selected`
               }
             </span>
             <ChevronDown className="ml-2 h-4 w-4" />

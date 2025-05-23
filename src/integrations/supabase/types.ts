@@ -22,6 +22,7 @@ export type Database = {
           location: string | null
           start_time: string | null
           status: string
+          tags: string[] | null
           title: string
         }
         Insert: {
@@ -36,6 +37,7 @@ export type Database = {
           location?: string | null
           start_time?: string | null
           status?: string
+          tags?: string[] | null
           title: string
         }
         Update: {
@@ -50,6 +52,7 @@ export type Database = {
           location?: string | null
           start_time?: string | null
           status?: string
+          tags?: string[] | null
           title?: string
         }
         Relationships: [

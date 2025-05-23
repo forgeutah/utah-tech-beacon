@@ -1,3 +1,4 @@
+
 import { CalendarDays, Github, Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,6 +21,7 @@ async function fetchUpcomingEvents() {
       status,
       group_id,
       description,
+      tags,
       groups (
         name,
         status
@@ -58,9 +60,10 @@ const Index = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [visibleEventCount, setVisibleEventCount] = useState(10);
 
-  // Filter events based on selected groups
+  // Filter events based on selected groups and tags
   const filteredEvents = events?.filter((event: any) => {
     // Only show event if group is null (unlisted) or group.status is approved
     if (event.groups && event.groups.status !== "approved") {
@@ -74,8 +77,30 @@ const Index = () => {
       }
     }
     
+    // Filter by selected tags
+    if (selectedTags.length > 0) {
+      if (!event.tags || !event.tags.some((tag: string) => selectedTags.includes(tag))) {
+        return false;
+      }
+    }
+    
     return true;
   }) || [];
+
+  // Extract all unique tags from events for the tags filter
+  const allTags = React.useMemo(() => {
+    if (!events) return [];
+    
+    const tagsSet = new Set<string>();
+    
+    events.forEach((event: any) => {
+      if (event.tags && Array.isArray(event.tags)) {
+        event.tags.forEach((tag: string) => tagsSet.add(tag));
+      }
+    });
+    
+    return Array.from(tagsSet).sort();
+  }, [events]);
 
   const handleShowMore = () => {
     setVisibleEventCount(prev => prev + 10);
@@ -134,11 +159,22 @@ const Index = () => {
       <section className="flex flex-col items-center flex-1 mb-10 px-4">
         <div className="card-gradient max-w-6xl w-full p-6 shadow-xl">
           <div className="flex items-center justify-between mb-6">
-            <MultiSelectDropdown
-              groups={groups || []}
-              selectedGroups={selectedGroups}
-              onSelectionChange={setSelectedGroups}
-            />
+            <div className="flex items-center gap-4">
+              <MultiSelectDropdown
+                groups={groups || []}
+                selectedGroups={selectedGroups}
+                onSelectionChange={setSelectedGroups}
+              />
+              
+              {allTags.length > 0 && (
+                <MultiSelectDropdown
+                  groups={allTags.map(tag => ({ id: tag, name: tag }))}
+                  selectedGroups={selectedTags}
+                  onSelectionChange={setSelectedTags}
+                  placeholder="Filter by tags"
+                />
+              )}
+            </div>
           </div>
           
           <EventsTable 
