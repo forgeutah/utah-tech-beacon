@@ -53,7 +53,7 @@ const Index = () => {
         </div>
         <div className="flex items-center gap-5">
           <a
-            href="https://github.com/ForgeUtahFoundation"
+            href="https://github.com/forgeutah"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-sm text-muted-foreground hover:text-white story-link"
