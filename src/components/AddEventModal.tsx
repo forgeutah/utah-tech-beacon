@@ -17,21 +17,24 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
     event_date: "",
     start_time: "",
     location: "",
+    contact_email: "",
   });
   const [groupData, setGroupData] = useState({
     name: "",
     meetup_link: "",
     luma_link: "",
+    contact_email: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  
   const handleClose = () => {
     onOpenChange(false);
     setTimeout(() => {
       setStep(1);
       setEventType(null);
-      setEventData({ title: "", group: "", event_date: "", start_time: "", location: "" });
-      setGroupData({ name: "", meetup_link: "", luma_link: "" });
+      setEventData({ title: "", group: "", event_date: "", start_time: "", location: "", contact_email: "" });
+      setGroupData({ name: "", meetup_link: "", luma_link: "", contact_email: "" });
     }, 200);
   };
 
@@ -169,11 +172,11 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
           <DialogTitle>Add Event or Group</DialogTitle>
           <DialogDescription>
             {step === 1
-              ? "Start by telling us what you're adding:"
+              ? "All events and groups go through an approval process before being listed. We may contact you if we have questions."
               : step === 2 && eventType === "one-time"
                 ? "Enter the details for your one-time event."
                 : step === 2 && eventType === "recurring-group"
-                  ? "Enter your group details and we'll preview your next events."
+                  ? "Enter your group details. Meetup.com and Luma groups will auto-update for you."
                   : ""}
           </DialogDescription>
         </DialogHeader>
@@ -234,6 +237,13 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
               value={eventData.location}
               onChange={e => setEventData(v => ({ ...v, location: e.target.value }))}
             />
+            <Input
+              type="email"
+              placeholder="Contact Email (in case we have questions)"
+              value={eventData.contact_email}
+              required
+              onChange={e => setEventData(v => ({ ...v, contact_email: e.target.value }))}
+            />
             <DialogFooter>
               <Button variant="outline" type="button" onClick={() => setStep(1)}>
                 Back
@@ -264,6 +274,13 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
                   placeholder="Luma Link (optional)"
                   value={groupData.luma_link}
                   onChange={e => setGroupData(v => ({ ...v, luma_link: e.target.value }))}
+                />
+                <Input
+                  type="email"
+                  placeholder="Contact Email (in case we have questions)"
+                  value={groupData.contact_email}
+                  required
+                  onChange={e => setGroupData(v => ({ ...v, contact_email: e.target.value }))}
                 />
                 {scrapeError && <div className="text-red-500">{scrapeError}</div>}
                 <DialogFooter>
