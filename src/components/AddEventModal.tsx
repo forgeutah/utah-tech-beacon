@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
     group: "",
     event_date: "",
     start_time: "",
+    end_time: "",
     location: "",
     venue_name: "",
     address_line_1: "",
@@ -45,6 +47,7 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
         group: "", 
         event_date: "", 
         start_time: "", 
+        end_time: "",
         location: "", 
         venue_name: "",
         address_line_1: "",
@@ -106,6 +109,7 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
         group_id: groupId,
         event_date: eventData.event_date,
         start_time: eventData.start_time,
+        end_time: eventData.end_time,
         location: eventData.location,
         venue_name: eventData.venue_name,
         address_line_1: eventData.address_line_1,
@@ -254,12 +258,20 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
               required
               onChange={e => setEventData(v => ({ ...v, event_date: e.target.value }))}
             />
-            <Input
-              type="time"
-              placeholder="Start Time"
-              value={eventData.start_time}
-              onChange={e => setEventData(v => ({ ...v, start_time: e.target.value }))}
-            />
+            <div className="grid grid-cols-2 gap-2">
+              <Input
+                type="time"
+                placeholder="Start Time"
+                value={eventData.start_time}
+                onChange={e => setEventData(v => ({ ...v, start_time: e.target.value }))}
+              />
+              <Input
+                type="time"
+                placeholder="End Time (optional)"
+                value={eventData.end_time}
+                onChange={e => setEventData(v => ({ ...v, end_time: e.target.value }))}
+              />
+            </div>
             
             <div className="border-t pt-3 mt-3">
               <h4 className="text-sm font-medium mb-3 text-muted-foreground">Venue & Location Details</h4>
