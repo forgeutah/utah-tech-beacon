@@ -112,11 +112,29 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
 
   return (
     <div className="space-y-6 relative">
-      {/* Vertical dotted line */}
-      <div className="absolute left-12 top-6 bottom-0 w-0.5 border-l border-dotted border-white/20"></div>
+      {/* Vertical dotted line with gaps around dates */}
+      <div className="absolute left-12 w-0.5">
+        <div 
+          className="w-full border-l-2 border-dotted border-white/20 dotted-line-spaced"
+          style={{
+            height: '20px',
+            top: '0px'
+          }}
+        ></div>
+      </div>
       
-      {groupedEventsArray.map(([dateKey, { date, events: dayEvents }]) => (
-        <div key={dateKey}>
+      {groupedEventsArray.map(([dateKey, { date, events: dayEvents }], index) => (
+        <div key={dateKey} className="relative">
+          {/* Dotted line segment after date */}
+          {index < groupedEventsArray.length - 1 && (
+            <div className="absolute left-0 w-0.5" style={{ top: '60px' }}>
+              <div 
+                className="w-full border-l-2 border-dotted border-white/20 dotted-line-spaced"
+                style={{ height: '140px' }}
+              ></div>
+            </div>
+          )}
+          
           <div className="flex gap-6">
             {/* Date column */}
             <div className="flex-shrink-0 w-24 relative z-10">
