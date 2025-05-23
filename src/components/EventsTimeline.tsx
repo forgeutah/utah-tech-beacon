@@ -53,14 +53,17 @@ const formatEventDateTime = (eventDate: string, startTime?: string) => {
 };
 
 const formatDayHeader = (date: Date) => {
+  const monthDay = format(date, "MMM d");
+  const dayName = format(date, "EEEE");
+  
   if (isToday(date)) {
-    return `${format(date, "MMM d")} Today`;
+    return { monthDay, dayName: "Today" };
   } else if (isTomorrow(date)) {
-    return `${format(date, "MMM d")} Tomorrow`;
+    return { monthDay, dayName: "Tomorrow" };
   } else if (isYesterday(date)) {
-    return `${format(date, "MMM d")} Yesterday`;
+    return { monthDay, dayName: "Yesterday" };
   } else {
-    return `${format(date, "MMM d")} ${format(date, "EEEE")}`;
+    return { monthDay, dayName };
   }
 };
 
@@ -114,11 +117,11 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
     <div className="space-y-8 relative">
       {/* Vertical dotted line */}
       {groupedEventsArray.length > 0 && (
-        <div className="absolute left-[9px] top-0 w-px">
+        <div className="absolute left-[9px] top-[24px] w-px">
           <div 
             className="w-full border-l border-dotted border-white/20"
             style={{
-              height: `calc(100% - 80px)`
+              height: `calc(100% - 104px)`
             }}
           ></div>
         </div>
@@ -129,9 +132,14 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
           {/* Date header with dot */}
           <div className="flex items-center gap-4 mb-6">
             <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0 relative z-10" />
-            <h2 className="text-lg font-semibold text-white">
-              {formatDayHeader(date)}
-            </h2>
+            <div className="text-white">
+              <div className="text-sm font-semibold">
+                {formatDayHeader(date).monthDay}{" "}
+                <span className="text-gray-400 font-normal">
+                  {formatDayHeader(date).dayName}
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Events for this date */}
