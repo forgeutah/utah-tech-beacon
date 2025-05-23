@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Tag } from "lucide-react";
+import { format, formatDistanceToNow, isToday, isTomorrow, isYesterday, isPast, parseISO } from "date-fns";
 import {
   Table,
   TableBody,
@@ -33,6 +34,44 @@ interface EventsTableProps {
   visibleCount: number;
   onShowMore: () => void;
 }
+
+const formatEventDateTime = (eventDate: string, startTime?: string) => {
+  const date = parseISO(eventDate);
+  
+  // Create full datetime if we have start_time
+  let fullDateTime = date;
+  if (startTime) {
+    const [hours, minutes] = startTime.split(':').map(Number);
+    fullDateTime = new Date(date);
+    fullDateTime.setHours(hours, minutes);
+  }
+  
+  // Format the date part
+  let dateDisplay = "";
+  if (isToday(date)) {
+    dateDisplay = "Today";
+  } else if (isTomorrow(date)) {
+    dateDisplay = "Tomorrow";
+  } else if (isYesterday(date)) {
+    dateDisplay = "Yesterday";
+  } else {
+    dateDisplay = format(date, "EEE, MMM d, yyyy");
+  }
+  
+  // Format the time part in AM/PM
+  let timeDisplay = "";
+  if (startTime) {
+    timeDisplay = format(fullDateTime, "h:mm a");
+    
+    // Add relative time for upcoming events
+    if (!isPast(fullDateTime)) {
+      const relativeTime = formatDistanceToNow(fullDateTime, { addSuffix: true });
+      timeDisplay += ` (${relativeTime})`;
+    }
+  }
+  
+  return { dateDisplay, timeDisplay };
+};
 
 export function EventsTable({ events, isLoading, error, visibleCount, onShowMore }: EventsTableProps) {
   if (isLoading) {
@@ -75,68 +114,61 @@ export function EventsTable({ events, isLoading, error, visibleCount, onShowMore
           </TableRow>
         </TableHeader>
         <TableBody>
-          {visibleEvents.map((event) => (
-            <TableRow key={event.id} className="border-b border-border hover:bg-white/5 transition">
-              <TableCell className="text-white font-medium">
-                <div>
-                  <div className="font-medium">{event.title}</div>
-                  {event.description && (
-                    <div className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                      {event.description}
-                    </div>
+          {visibleEvents.map((event) => {
+            const { dateDisplay, timeDisplay } = formatEventDateTime(event.event_date, event.start_time);
+            
+            return (
+              <TableRow key={event.id} className="border-b border-border hover:bg-white/5 transition">
+                <TableCell className="text-white font-medium">
+                  <div>
+                    <div className="font-medium">{event.title}</div>
+                    {event.description && (
+                      <div className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                        {event.description}
+                      </div>
+                    )}
+                  </div>
+                </TableCell>
+                
+                <TableCell className="text-muted-foreground">
+                  {event.groups?.name ?? (
+                    <span className="italic text-xs">Unlisted Group</span>
                   )}
-                </div>
-              </TableCell>
-              
-              <TableCell className="text-muted-foreground">
-                {event.groups?.name ?? (
-                  <span className="italic text-xs">Unlisted Group</span>
-                )}
-              </TableCell>
-              
-              <TableCell className="text-muted-foreground">
-                <div className="flex flex-col">
-                  <span>
-                    {event.event_date &&
-                      new Date(event.event_date).toLocaleDateString(undefined, {
-                        weekday: "short",
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric"
-                      })
-                    }
-                  </span>
-                  {event.start_time && (
-                    <span className="text-sm">
-                      {event.start_time.slice(0, 5)}
-                    </span>
-                  )}
-                </div>
-              </TableCell>
-              
-              <TableCell className="text-muted-foreground">
-                {event.location || "TBD"}
-              </TableCell>
-              
-              <TableCell>
-                <div className="flex flex-wrap gap-1">
-                  {event.tags && event.tags.length > 0 ? (
-                    event.tags.map((tag, index) => (
-                      <Badge 
-                        key={index} 
-                        variant="outline" 
-                        className="text-xs bg-transparent border-primary text-primary px-2"
-                      >
-                        {tag}
-                      </Badge>
-                    ))
-                  ) : (
-                    <span className="text-xs text-muted-foreground italic">No tags</span>
-                  )}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
+                </TableCell>
+                
+                <TableCell className="text-muted-foreground">
+                  <div className="flex flex-col">
+                    <span>{dateDisplay}</span>
+                    {timeDisplay && (
+                      <span className="text-sm">{timeDisplay}</span>
+                    )}
+                  </div>
+                </TableCell>
+                
+                <TableCell className="text-muted-foreground">
+                  {event.location || "TBD"}
+                </TableCell>
+                
+                <TableCell>
+                  <div className="flex flex-wrap gap-1">
+                    {event.tags && event.tags.length > 0 ? (
+                      event.tags.map((tag, index) => (
+                        <Badge 
+                          key={index} 
+                          variant="outline" 
+                          className="text-xs bg-transparent border-primary text-primary px-2"
+                        >
+                          {tag}
+                        </Badge>
+                      ))
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">No tags</span>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
       
