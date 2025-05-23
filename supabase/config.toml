@@ -3,3 +3,6 @@ project_id = "gocvjqljtcxtcrwvfwez"
 
 [functions.scrape-events]
 verify_jwt = false
+
+[functions.generate-ical]
+verify_jwt = false
