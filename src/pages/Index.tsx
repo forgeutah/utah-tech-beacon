@@ -6,6 +6,7 @@ import AddEventModal from "@/components/AddEventModal";
 import { useState } from "react";
 import { EventsTable } from "@/components/EventsTable";
 import { MultiSelectDropdown } from "@/components/MultiSelectDropdown";
+import CalendarLinkModal from "@/components/CalendarLinkModal";
 
 // Fetch all approved upcoming events and their approved groups from Supabase
 async function fetchUpcomingEvents() {
@@ -61,6 +62,7 @@ const Index = () => {
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [visibleEventCount, setVisibleEventCount] = useState(10);
+  const [showCalendarModal, setShowCalendarModal] = useState(false);
 
   // Generate iCal URL with current filters
   const generateICalUrl = () => {
@@ -188,14 +190,13 @@ const Index = () => {
               )}
             </div>
             
-            <a
-              href={generateICalUrl()}
-              download="utah-dev-events.ics"
+            <button
+              onClick={() => setShowCalendarModal(true)}
               className="flex items-center gap-2 px-4 py-2 text-sm bg-primary/10 text-primary border border-primary rounded-md hover:bg-primary hover:text-black transition-colors"
             >
               <Calendar className="w-4 h-4" />
-              Download Calendar
-            </a>
+              Get Calendar Link
+            </button>
           </div>
           
           <EventsTable 
@@ -214,6 +215,15 @@ const Index = () => {
           &copy; {new Date().getFullYear()} Forge Utah Foundation. Empowering Utah's developer community.
         </span>
       </footer>
+
+      <CalendarLinkModal
+        open={showCalendarModal}
+        onOpenChange={setShowCalendarModal}
+        selectedGroups={selectedGroups}
+        selectedTags={selectedTags}
+        groups={groups || []}
+        generateICalUrl={generateICalUrl}
+      />
     </div>
   );
 };
