@@ -61,6 +61,7 @@ const Index = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [visibleEventCount, setVisibleEventCount] = useState(10);
 
   // Filter events based on selected groups and tags
   const filteredEvents = events?.filter((event: any) => {
@@ -80,6 +81,10 @@ const Index = () => {
     
     return true;
   }) || [];
+
+  const handleShowMore = () => {
+    setVisibleEventCount(prev => prev + 10);
+  };
 
   return (
     <SidebarProvider>
@@ -157,6 +162,8 @@ const Index = () => {
                 events={filteredEvents}
                 isLoading={isLoading}
                 error={error}
+                visibleCount={visibleEventCount}
+                onShowMore={handleShowMore}
               />
             </div>
           </section>

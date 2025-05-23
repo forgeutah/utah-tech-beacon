@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 
 interface Event {
   id: string;
@@ -26,9 +27,11 @@ interface EventsTableProps {
   events: Event[];
   isLoading: boolean;
   error: any;
+  visibleCount: number;
+  onShowMore: () => void;
 }
 
-export function EventsTable({ events, isLoading, error }: EventsTableProps) {
+export function EventsTable({ events, isLoading, error, visibleCount, onShowMore }: EventsTableProps) {
   if (isLoading) {
     return (
       <div className="py-8 text-center text-muted-foreground">
@@ -53,6 +56,9 @@ export function EventsTable({ events, isLoading, error }: EventsTableProps) {
     );
   }
 
+  const visibleEvents = events.slice(0, visibleCount);
+  const hasMoreEvents = events.length > visibleCount;
+
   return (
     <div className="w-full overflow-x-auto">
       <Table>
@@ -65,7 +71,7 @@ export function EventsTable({ events, isLoading, error }: EventsTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {events.map((event) => (
+          {visibleEvents.map((event) => (
             <TableRow key={event.id} className="border-b border-border hover:bg-white/5 transition">
               <TableCell className="text-white font-medium">
                 <div>
@@ -111,6 +117,18 @@ export function EventsTable({ events, isLoading, error }: EventsTableProps) {
           ))}
         </TableBody>
       </Table>
+      
+      {hasMoreEvents && (
+        <div className="flex justify-center mt-6">
+          <Button 
+            onClick={onShowMore}
+            variant="outline"
+            className="text-primary border-primary hover:bg-primary hover:text-black"
+          >
+            Show More ({events.length - visibleCount} remaining)
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
