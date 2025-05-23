@@ -8,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 interface Group {
   id: string;
@@ -38,10 +37,6 @@ export function MultiSelectDropdown({
   const clearSelection = () => {
     onSelectionChange([]);
   };
-
-  const selectedGroupNames = groups
-    .filter(group => selectedGroups.includes(group.id))
-    .map(group => group.name);
 
   return (
     <div className="flex items-center gap-2">
@@ -78,31 +73,15 @@ export function MultiSelectDropdown({
       </DropdownMenu>
 
       {selectedGroups.length > 0 && (
-        <div className="flex items-center gap-2 flex-wrap">
-          {selectedGroupNames.slice(0, 3).map((name) => (
-            <Badge 
-              key={name} 
-              variant="secondary" 
-              className="bg-primary/20 text-primary border-primary/30"
-            >
-              {name}
-            </Badge>
-          ))}
-          {selectedGroupNames.length > 3 && (
-            <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30">
-              +{selectedGroupNames.length - 3} more
-            </Badge>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearSelection}
-            className="h-6 px-2 text-xs text-muted-foreground hover:text-white"
-          >
-            <X className="h-3 w-3 mr-1" />
-            Clear
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={clearSelection}
+          className="h-6 px-2 text-xs text-muted-foreground hover:text-white"
+        >
+          <X className="h-3 w-3 mr-1" />
+          Clear
+        </Button>
       )}
     </div>
   );
