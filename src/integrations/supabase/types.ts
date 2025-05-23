@@ -25,6 +25,7 @@ export type Database = {
           link: string | null
           location: string | null
           postal_code: string | null
+          remote_id: string | null
           start_time: string | null
           state_province: string | null
           status: string
@@ -47,6 +48,7 @@ export type Database = {
           link?: string | null
           location?: string | null
           postal_code?: string | null
+          remote_id?: string | null
           start_time?: string | null
           state_province?: string | null
           status?: string
@@ -69,6 +71,7 @@ export type Database = {
           link?: string | null
           location?: string | null
           postal_code?: string | null
+          remote_id?: string | null
           start_time?: string | null
           state_province?: string | null
           status?: string
@@ -95,6 +98,7 @@ export type Database = {
           luma_link: string | null
           meetup_link: string | null
           name: string
+          remote_id: string | null
           status: string
           tags: string[] | null
           website: string | null
@@ -107,6 +111,7 @@ export type Database = {
           luma_link?: string | null
           meetup_link?: string | null
           name: string
+          remote_id?: string | null
           status?: string
           tags?: string[] | null
           website?: string | null
@@ -119,6 +124,7 @@ export type Database = {
           luma_link?: string | null
           meetup_link?: string | null
           name?: string
+          remote_id?: string | null
           status?: string
           tags?: string[] | null
           website?: string | null

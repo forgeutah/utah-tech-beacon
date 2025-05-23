@@ -69,6 +69,19 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
   const [scrapedEvents, setScrapedEvents] = useState<any[]>([]);
   const [scrapeError, setScrapeError] = useState<string>("");
 
+  // Helper function to generate remote_id
+  const generateRemoteId = (link: string) => {
+    if (link.includes("meetup.com")) {
+      const match = link.match(/meetup\.com\/([^\/]+)/);
+      return match ? `meetup-${match[1]}` : null;
+    }
+    if (link.includes("luma.com")) {
+      const match = link.match(/luma\.com\/([^\/]+)/);
+      return match ? `luma-${match[1]}` : null;
+    }
+    return null;
+  };
+
   // HANDLERS
   async function handleEventSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -175,6 +188,9 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
       .map(tag => tag.trim())
       .filter(tag => tag.length > 0);
     
+    // Generate remote_id from links
+    const remoteId = generateRemoteId(groupData.meetup_link || groupData.luma_link || "");
+    
     // Insert group
     const { data: group, error } = await supabase
       .from("groups")
@@ -183,7 +199,8 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
         meetup_link: groupData.meetup_link,
         luma_link: groupData.luma_link,
         status: "pending",
-        tags: processedTags.length > 0 ? processedTags : null
+        tags: processedTags.length > 0 ? processedTags : null,
+        remote_id: remoteId
       }).select().single();
 
     if (error) {
@@ -202,7 +219,8 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
         status: "pending",
         description: e.description,
         link: e.link,
-        external_id: e.external_id
+        external_id: e.external_id,
+        remote_id: e.remote_id
       });
     }
     toast({ title: "Group submitted!", description: "Your group is pending approval along with the next 3 events.", variant: "default" });

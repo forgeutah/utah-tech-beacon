@@ -15,6 +15,12 @@ function extractEventId(link: string | null) {
   return match ? match[1] : null;
 }
 
+// Helper to extract group slug from Meetup URL
+function extractGroupSlug(url: string) {
+  const match = url.match(/meetup\.com\/([^\/]+)/);
+  return match ? match[1] : null;
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -56,6 +62,11 @@ serve(async (req) => {
         event.description = $(this).find("p").text().trim();
         event.location = $(this).find("[data-testid='event-card-location']").text().trim()
           || $(this).find("span:contains('Location')").parent().text().replace('Location', '').trim();
+
+        // Add remote_id for tracking
+        if (event.external_id) {
+          event.remote_id = `meetup-${event.external_id}`;
+        }
 
         if (event.title && event.external_id) {
           events.push(event);

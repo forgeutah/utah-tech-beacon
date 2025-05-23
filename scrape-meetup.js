@@ -41,7 +41,8 @@ async function upsertEvent(event) {
       status: "approved",
       description: event.description,
       link: event.link,
-      external_id: event.external_id
+      external_id: event.external_id,
+      remote_id: `meetup-${event.external_id}` // Use the new remote_id field
     }], { onConflict: "group_id,external_id" });
   if (error) {
     console.error(`Error upserting "${event.title}": ${error.message}`);
@@ -74,16 +75,26 @@ async function extractGroupTags() {
     });
 
     if (tags.length > 0) {
-      // Update the group tags in Supabase
+      // Extract group ID from URL for remote_id
+      const groupMatch = groupUrl.match(/meetup\.com\/([^\/]+)/);
+      const groupSlug = groupMatch ? groupMatch[1] : null;
+      
+      // Update the group tags and remote_id in Supabase
       const { error } = await supabase
         .from("groups")
-        .update({ tags })
+        .update({ 
+          tags,
+          remote_id: groupSlug ? `meetup-${groupSlug}` : null
+        })
         .eq("id", UTAH_GO_GROUP_ID);
       
       if (error) {
         console.error("Error updating group tags:", error.message);
       } else {
         console.log("Updated group tags:", tags);
+        if (groupSlug) {
+          console.log("Updated group remote_id:", `meetup-${groupSlug}`);
+        }
       }
     }
 
