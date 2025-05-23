@@ -133,7 +133,7 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
           <div className="flex items-center gap-4 mb-6">
             <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0 relative z-10" />
             <div className="text-white">
-              <div className="text-sm font-semibold">
+              <div className="text-lg font-semibold">
                 {formatDayHeader(date).monthDay}{" "}
                 <span className="text-gray-400 font-normal">
                   {formatDayHeader(date).dayName}
