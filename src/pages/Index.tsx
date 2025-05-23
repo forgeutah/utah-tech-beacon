@@ -1,5 +1,4 @@
-
-import { CalendarDays, Github, Plus } from "lucide-react";
+import { CalendarDays, Github, Plus, Calendar } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import React from "react";
@@ -62,6 +61,19 @@ const Index = () => {
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [visibleEventCount, setVisibleEventCount] = useState(10);
+
+  // Generate iCal URL with current filters
+  const generateICalUrl = () => {
+    const params = new URLSearchParams();
+    if (selectedGroups.length > 0) {
+      params.set('groups', selectedGroups.join(','));
+    }
+    if (selectedTags.length > 0) {
+      params.set('tags', selectedTags.join(','));
+    }
+    
+    return `https://gocvjqljtcxtcrwvfwez.supabase.co/functions/v1/generate-ical?${params.toString()}`;
+  };
 
   // Filter events based on selected groups and tags
   const filteredEvents = events?.filter((event: any) => {
@@ -175,6 +187,15 @@ const Index = () => {
                 />
               )}
             </div>
+            
+            <a
+              href={generateICalUrl()}
+              download="utah-dev-events.ics"
+              className="flex items-center gap-2 px-4 py-2 text-sm bg-primary/10 text-primary border border-primary rounded-md hover:bg-primary hover:text-black transition-colors"
+            >
+              <Calendar className="w-4 h-4" />
+              Download Calendar
+            </a>
           </div>
           
           <EventsTable 
