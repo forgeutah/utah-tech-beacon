@@ -11,6 +11,10 @@ export type Database = {
     Tables: {
       events: {
         Row: {
+          address_line_1: string | null
+          address_line_2: string | null
+          city: string | null
+          country: string | null
           created_at: string
           description: string | null
           end_time: string | null
@@ -20,12 +24,19 @@ export type Database = {
           id: string
           link: string | null
           location: string | null
+          postal_code: string | null
           start_time: string | null
+          state_province: string | null
           status: string
           tags: string[] | null
           title: string
+          venue_name: string | null
         }
         Insert: {
+          address_line_1?: string | null
+          address_line_2?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           description?: string | null
           end_time?: string | null
@@ -35,12 +46,19 @@ export type Database = {
           id?: string
           link?: string | null
           location?: string | null
+          postal_code?: string | null
           start_time?: string | null
+          state_province?: string | null
           status?: string
           tags?: string[] | null
           title: string
+          venue_name?: string | null
         }
         Update: {
+          address_line_1?: string | null
+          address_line_2?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           description?: string | null
           end_time?: string | null
@@ -50,10 +68,13 @@ export type Database = {
           id?: string
           link?: string | null
           location?: string | null
+          postal_code?: string | null
           start_time?: string | null
+          state_province?: string | null
           status?: string
           tags?: string[] | null
           title?: string
+          venue_name?: string | null
         }
         Relationships: [
           {

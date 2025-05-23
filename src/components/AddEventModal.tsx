@@ -17,6 +17,13 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
     event_date: "",
     start_time: "",
     location: "",
+    venue_name: "",
+    address_line_1: "",
+    address_line_2: "",
+    city: "",
+    state_province: "",
+    postal_code: "",
+    country: "",
     contact_email: "",
   });
   const [groupData, setGroupData] = useState({
@@ -33,7 +40,21 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
     setTimeout(() => {
       setStep(1);
       setEventType(null);
-      setEventData({ title: "", group: "", event_date: "", start_time: "", location: "", contact_email: "" });
+      setEventData({ 
+        title: "", 
+        group: "", 
+        event_date: "", 
+        start_time: "", 
+        location: "", 
+        venue_name: "",
+        address_line_1: "",
+        address_line_2: "",
+        city: "",
+        state_province: "",
+        postal_code: "",
+        country: "",
+        contact_email: "" 
+      });
       setGroupData({ name: "", meetup_link: "", luma_link: "", contact_email: "" });
     }, 200);
   };
@@ -86,6 +107,13 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
         event_date: eventData.event_date,
         start_time: eventData.start_time,
         location: eventData.location,
+        venue_name: eventData.venue_name,
+        address_line_1: eventData.address_line_1,
+        address_line_2: eventData.address_line_2,
+        city: eventData.city,
+        state_province: eventData.state_province,
+        postal_code: eventData.postal_code,
+        country: eventData.country,
         status: "pending",
       });
     if (eventError) {
@@ -167,7 +195,7 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
   // RENDER
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add Event or Group</DialogTitle>
           <DialogDescription>
@@ -232,8 +260,53 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
               value={eventData.start_time}
               onChange={e => setEventData(v => ({ ...v, start_time: e.target.value }))}
             />
+            
+            <div className="border-t pt-3 mt-3">
+              <h4 className="text-sm font-medium mb-3 text-muted-foreground">Venue & Location Details</h4>
+              
+              <Input
+                placeholder="Venue Name (optional)"
+                value={eventData.venue_name}
+                onChange={e => setEventData(v => ({ ...v, venue_name: e.target.value }))}
+              />
+              <Input
+                placeholder="Address Line 1 (optional)"
+                value={eventData.address_line_1}
+                onChange={e => setEventData(v => ({ ...v, address_line_1: e.target.value }))}
+              />
+              <Input
+                placeholder="Address Line 2 (optional)"
+                value={eventData.address_line_2}
+                onChange={e => setEventData(v => ({ ...v, address_line_2: e.target.value }))}
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <Input
+                  placeholder="City (optional)"
+                  value={eventData.city}
+                  onChange={e => setEventData(v => ({ ...v, city: e.target.value }))}
+                />
+                <Input
+                  placeholder="State/Province (optional)"
+                  value={eventData.state_province}
+                  onChange={e => setEventData(v => ({ ...v, state_province: e.target.value }))}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Input
+                  placeholder="Postal Code (optional)"
+                  value={eventData.postal_code}
+                  onChange={e => setEventData(v => ({ ...v, postal_code: e.target.value }))}
+                />
+                <Input
+                  placeholder="Country (optional)"
+                  value={eventData.country}
+                  onChange={e => setEventData(v => ({ ...v, country: e.target.value }))}
+                />
+              </div>
+            </div>
+            
             <Input
-              placeholder="City or Location"
+              placeholder="General Location Description (optional)"
               value={eventData.location}
               onChange={e => setEventData(v => ({ ...v, location: e.target.value }))}
             />
