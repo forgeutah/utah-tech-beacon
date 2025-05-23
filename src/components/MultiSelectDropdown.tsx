@@ -58,7 +58,7 @@ export function MultiSelectDropdown({
         <DropdownMenuTrigger asChild>
           <Button 
             variant="outline" 
-            className="h-10 justify-between text-white border-border bg-transparent hover:bg-white/10"
+            className="h-10 justify-between text-white border-border bg-transparent hover:bg-white/10 focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none"
           >
             <span>
               {selectedGroups.length === 0 
@@ -80,7 +80,7 @@ export function MultiSelectDropdown({
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="pl-8 h-8 bg-background border-border text-sm"
+                className="pl-8 h-8 bg-background border-border text-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none"
               />
             </div>
           </div>
@@ -97,7 +97,7 @@ export function MultiSelectDropdown({
                     checked={selectedGroups.includes(group.id)}
                     onCheckedChange={() => handleGroupToggle(group.id)}
                     onSelect={(event) => event.preventDefault()}
-                    className="cursor-pointer"
+                    className="cursor-pointer focus:bg-accent focus:text-accent-foreground"
                   >
                     {group.name}
                   </DropdownMenuCheckboxItem>
@@ -113,7 +113,7 @@ export function MultiSelectDropdown({
           variant="ghost"
           size="sm"
           onClick={clearSelection}
-          className="h-6 px-2 text-xs text-muted-foreground hover:text-white"
+          className="h-6 px-2 text-xs text-muted-foreground hover:text-white focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none"
         >
           <X className="h-3 w-3 mr-1" />
           Clear
