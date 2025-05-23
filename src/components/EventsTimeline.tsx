@@ -1,3 +1,4 @@
+
 import React from "react";
 import { format, parseISO, isSameDay, isToday, isTomorrow, isYesterday, isPast, formatDistanceToNow } from "date-fns";
 import { Badge } from "@/components/ui/badge";
@@ -110,12 +111,15 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
   const groupedEventsArray = Object.entries(groupedEvents);
 
   return (
-    <div className="space-y-6">
-      {groupedEventsArray.map(([dateKey, { date, events: dayEvents }], dayIndex) => (
+    <div className="space-y-6 relative">
+      {/* Vertical dotted line */}
+      <div className="absolute left-12 top-6 bottom-0 w-0.5 border-l border-dotted border-white/20"></div>
+      
+      {groupedEventsArray.map(([dateKey, { date, events: dayEvents }]) => (
         <div key={dateKey}>
           <div className="flex gap-6">
             {/* Date column */}
-            <div className="flex-shrink-0 w-24">
+            <div className="flex-shrink-0 w-24 relative z-10">
               <div className="sticky top-6">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
@@ -194,18 +198,6 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
               })}
             </div>
           </div>
-          
-          {/* Dotted separator line between days (except for the last day) */}
-          {dayIndex < groupedEventsArray.length - 1 && (
-            <div className="flex gap-6 mt-6">
-              <div className="w-24 flex justify-center">
-                <div className="w-0.5 h-8 border-l border-dotted border-white/20"></div>
-              </div>
-              <div className="flex-1">
-                <div className="w-full h-0.5 border-t border-dotted border-white/20 mt-4"></div>
-              </div>
-            </div>
-          )}
         </div>
       ))}
       
