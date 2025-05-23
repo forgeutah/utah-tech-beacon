@@ -111,85 +111,101 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
   const groupedEventsArray = Object.entries(groupedEvents);
 
   return (
-    <div className="space-y-8">
-      {groupedEventsArray.map(([dateKey, { date, events: dayEvents }], groupIndex) => (
-        <div key={dateKey}>
-          {/* Date divider */}
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
-            <div className="flex-1 h-px bg-gradient-to-r from-white/20 to-transparent" />
-            <div className="text-lg font-semibold text-white">
-              {formatDayHeader(date)}
-            </div>
-            <div className="flex-1 h-px bg-gradient-to-l from-white/20 to-transparent" />
-          </div>
-
-          {/* Events for this day */}
-          <div className="space-y-4 ml-6">
-            {dayEvents.map((event) => {
-              const { timeDisplay } = formatEventDateTime(event.event_date, event.start_time);
-              
-              return (
-                <div
-                  key={event.id}
-                  className="bg-gradient-to-br from-[#22243A]/80 via-[#23283B]/80 to-[#383B53]/80 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-primary/30 transition-all duration-200"
-                >
-                  {/* Time and duration */}
-                  {timeDisplay && (
-                    <div className="flex items-center gap-2 text-sm text-primary mb-3">
-                      <Clock className="w-4 h-4" />
-                      <span className="font-medium">{timeDisplay}</span>
-                    </div>
-                  )}
-
-                  {/* Event title */}
-                  <h3 className="text-xl font-semibold text-white mb-2">
-                    {event.title}
-                  </h3>
-
-                  {/* Event description */}
-                  {event.description && (
-                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                      {event.description}
-                    </p>
-                  )}
-
-                  {/* Event details */}
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4">
-                    {/* Group */}
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4" />
-                      <span>
-                        {event.groups?.name ?? (
-                          <span className="italic">Unlisted Group</span>
-                        )}
-                      </span>
-                    </div>
-
-                    {/* Location */}
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" />
-                      <span>{event.location || "TBD"}</span>
-                    </div>
+    <div className="space-y-6 relative">
+      {/* Vertical dotted line connecting dots */}
+      {groupedEventsArray.length > 1 && (
+        <div className="absolute left-[4px] top-8 w-px">
+          <div 
+            className="w-full border-l border-dotted border-white/20 dotted-line-spaced"
+            style={{
+              height: `${(groupedEventsArray.length - 1) * 160 + 8}px`
+            }}
+          ></div>
+        </div>
+      )}
+      
+      {groupedEventsArray.map(([dateKey, { date, events: dayEvents }]) => (
+        <div key={dateKey} className="relative">
+          <div className="flex gap-6">
+            {/* Date column */}
+            <div className="flex-shrink-0 w-24 relative z-10">
+              <div className="sticky top-6">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
+                  <div className="font-medium">
+                    {formatDayHeader(date)}
                   </div>
-
-                  {/* Tags */}
-                  {event.tags && event.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {event.tags.map((tag, index) => (
-                        <Badge 
-                          key={index} 
-                          variant="outline" 
-                          className="text-xs bg-transparent border-primary/40 text-primary/90 px-2"
-                        >
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
                 </div>
-              );
-            })}
+              </div>
+            </div>
+
+            {/* Events column */}
+            <div className="flex-1 space-y-4">
+              {dayEvents.map((event) => {
+                const { timeDisplay } = formatEventDateTime(event.event_date, event.start_time);
+                
+                return (
+                  <div
+                    key={event.id}
+                    className="bg-gradient-to-br from-[#22243A]/80 via-[#23283B]/80 to-[#383B53]/80 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-primary/30 transition-all duration-200"
+                  >
+                    {/* Time and duration */}
+                    {timeDisplay && (
+                      <div className="flex items-center gap-2 text-sm text-primary mb-3">
+                        <Clock className="w-4 h-4" />
+                        <span className="font-medium">{timeDisplay}</span>
+                      </div>
+                    )}
+
+                    {/* Event title */}
+                    <h3 className="text-xl font-semibold text-white mb-2">
+                      {event.title}
+                    </h3>
+
+                    {/* Event description */}
+                    {event.description && (
+                      <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                        {event.description}
+                      </p>
+                    )}
+
+                    {/* Event details */}
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4">
+                      {/* Group */}
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4" />
+                        <span>
+                          {event.groups?.name ?? (
+                            <span className="italic">Unlisted Group</span>
+                          )}
+                        </span>
+                      </div>
+
+                      {/* Location */}
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4" />
+                        <span>{event.location || "TBD"}</span>
+                      </div>
+                    </div>
+
+                    {/* Tags */}
+                    {event.tags && event.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {event.tags.map((tag, index) => (
+                          <Badge 
+                            key={index} 
+                            variant="outline" 
+                            className="text-xs bg-transparent border-primary/40 text-primary/90 px-2"
+                          >
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       ))}
