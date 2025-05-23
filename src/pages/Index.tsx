@@ -134,16 +134,6 @@ const Index = () => {
       <section className="flex flex-col items-center flex-1 mb-10 px-4">
         <div className="card-gradient max-w-6xl w-full p-6 shadow-xl">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold flex items-center gap-2 text-white">
-              <CalendarDays className="w-6 h-6 text-primary" />
-              Utah Tech Events Calendar
-              {filteredEvents.length > 0 && (
-                <span className="text-sm text-muted-foreground ml-2">
-                  ({filteredEvents.length} events)
-                </span>
-              )}
-            </h2>
-            
             <MultiSelectDropdown
               groups={groups || []}
               selectedGroups={selectedGroups}
