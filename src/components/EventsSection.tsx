@@ -1,4 +1,3 @@
-
 import { Calendar } from "lucide-react";
 import { useState } from "react";
 import { EventsTimeline } from "@/components/EventsTimeline";
@@ -92,7 +91,7 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
   return (
     <>
       <section className="flex flex-col items-center flex-1 mb-10 px-4">
-        <div className="card-gradient max-w-6xl w-full p-6 shadow-xl">
+        <div className="max-w-6xl w-full">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
               <MultiSelectDropdown
