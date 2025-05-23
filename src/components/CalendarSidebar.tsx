@@ -15,6 +15,7 @@ import { Filter, Users, Tag } from "lucide-react";
 interface Group {
   id: string;
   name: string;
+  tags?: string[];
 }
 
 interface CalendarSidebarProps {
@@ -23,6 +24,7 @@ interface CalendarSidebarProps {
   setSelectedGroups: (groups: string[]) => void;
   selectedTags: string[];
   setSelectedTags: (tags: string[]) => void;
+  allTags: string[];
 }
 
 export function CalendarSidebar({
@@ -31,12 +33,21 @@ export function CalendarSidebar({
   setSelectedGroups,
   selectedTags,
   setSelectedTags,
+  allTags,
 }: CalendarSidebarProps) {
   const handleGroupToggle = (groupId: string) => {
     setSelectedGroups(
       selectedGroups.includes(groupId)
         ? selectedGroups.filter(id => id !== groupId)
         : [...selectedGroups, groupId]
+    );
+  };
+
+  const handleTagToggle = (tag: string) => {
+    setSelectedTags(
+      selectedTags.includes(tag)
+        ? selectedTags.filter(t => t !== tag)
+        : [...selectedTags, tag]
     );
   };
 
@@ -104,9 +115,27 @@ export function CalendarSidebar({
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <div className="space-y-2">
-              <p className="text-xs text-muted-foreground italic">
-                Tags coming soon...
-              </p>
+              {allTags.length > 0 ? (
+                allTags.map((tag) => (
+                  <div key={tag} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`tag-${tag}`}
+                      checked={selectedTags.includes(tag)}
+                      onCheckedChange={() => handleTagToggle(tag)}
+                    />
+                    <label
+                      htmlFor={`tag-${tag}`}
+                      className="text-sm text-sidebar-foreground cursor-pointer hover:text-white transition-colors"
+                    >
+                      {tag}
+                    </label>
+                  </div>
+                ))
+              ) : (
+                <p className="text-xs text-muted-foreground italic">
+                  No tags available
+                </p>
+              )}
             </div>
           </SidebarGroupContent>
         </SidebarGroup>

@@ -23,6 +23,7 @@ interface Event {
 interface Group {
   id: string;
   name: string;
+  tags?: string[];
 }
 
 interface EventsSectionProps {
@@ -51,6 +52,14 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
     
     return `https://gocvjqljtcxtcrwvfwez.supabase.co/functions/v1/generate-ical?${params.toString()}`;
   };
+
+  // Extract all tags from groups and events combined
+  const allAvailableTags = [...new Set([
+    ...allTags,
+    ...groups
+      .filter(group => group.tags && group.tags.length > 0)
+      .flatMap(group => group.tags || [])
+  ])].sort();
 
   // Filter events based on selected groups and tags
   const filteredEvents = events?.filter((event: Event) => {
@@ -92,9 +101,9 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
                 onSelectionChange={setSelectedGroups}
               />
               
-              {allTags.length > 0 && (
+              {allAvailableTags.length > 0 && (
                 <MultiSelectDropdown
-                  groups={allTags.map(tag => ({ id: tag, name: tag }))}
+                  groups={allAvailableTags.map(tag => ({ id: tag, name: tag }))}
                   selectedGroups={selectedTags}
                   onSelectionChange={setSelectedTags}
                   placeholder="Filter by tags"

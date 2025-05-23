@@ -50,8 +50,55 @@ async function upsertEvent(event) {
   }
 }
 
+// Function to extract tags from Meetup page
+async function extractGroupTags() {
+  try {
+    // First, get the group page instead of events page to find tags
+    const groupUrl = MEETUP_URL.split('/events')[0];
+    const { data: html } = await axios.get(groupUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        Accept: "text/html",
+      },
+    });
+
+    const $ = cheerio.load(html);
+    const tags = [];
+
+    // Look for topics or tags on the page
+    $('[data-testid="group-topics"] span, .groupTopics span, .topics a').each(function() {
+      const tag = $(this).text().trim();
+      if (tag && !tag.includes("See all") && !tag.includes("show more")) {
+        tags.push(tag);
+      }
+    });
+
+    if (tags.length > 0) {
+      // Update the group tags in Supabase
+      const { error } = await supabase
+        .from("groups")
+        .update({ tags })
+        .eq("id", UTAH_GO_GROUP_ID);
+      
+      if (error) {
+        console.error("Error updating group tags:", error.message);
+      } else {
+        console.log("Updated group tags:", tags);
+      }
+    }
+
+    return tags;
+  } catch (err) {
+    console.error("Failed to extract group tags:", err.message);
+    return [];
+  }
+}
+
 async function scrapeMeetupEvents() {
   try {
+    // Try to extract and update group tags first
+    await extractGroupTags();
+
     // Fetch the HTML from Meetup
     const { data: html } = await axios.get(MEETUP_URL, {
       headers: {
@@ -118,4 +165,3 @@ async function scrapeMeetupEvents() {
 }
 
 scrapeMeetupEvents();
-

@@ -96,6 +96,7 @@ export type Database = {
           meetup_link: string | null
           name: string
           status: string
+          tags: string[] | null
           website: string | null
         }
         Insert: {
@@ -107,6 +108,7 @@ export type Database = {
           meetup_link?: string | null
           name: string
           status?: string
+          tags?: string[] | null
           website?: string | null
         }
         Update: {
@@ -118,6 +120,7 @@ export type Database = {
           meetup_link?: string | null
           name?: string
           status?: string
+          tags?: string[] | null
           website?: string | null
         }
         Relationships: []

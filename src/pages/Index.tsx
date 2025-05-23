@@ -23,7 +23,8 @@ async function fetchUpcomingEvents() {
       tags,
       groups (
         name,
-        status
+        status,
+        tags
       )
     `)
     .eq("status", "approved")
@@ -38,7 +39,7 @@ async function fetchUpcomingEvents() {
 async function fetchGroups() {
   const { data, error } = await supabase
     .from("groups")
-    .select("id, name")
+    .select("id, name, tags")
     .eq("status", "approved")
     .order("name", { ascending: true });
 
@@ -57,20 +58,32 @@ const Index = () => {
     queryFn: fetchGroups,
   });
 
-  // Extract all unique tags from events for the tags filter
+  // Extract all unique tags from events and groups for the tags filter
   const allTags = React.useMemo(() => {
-    if (!events) return [];
+    if (!events && !groups) return [];
     
     const tagsSet = new Set<string>();
     
-    events.forEach((event: any) => {
-      if (event.tags && Array.isArray(event.tags)) {
-        event.tags.forEach((tag: string) => tagsSet.add(tag));
-      }
-    });
+    // Add event tags
+    if (events) {
+      events.forEach((event: any) => {
+        if (event.tags && Array.isArray(event.tags)) {
+          event.tags.forEach((tag: string) => tagsSet.add(tag));
+        }
+      });
+    }
+    
+    // Add group tags
+    if (groups) {
+      groups.forEach((group: any) => {
+        if (group.tags && Array.isArray(group.tags)) {
+          group.tags.forEach((tag: string) => tagsSet.add(tag));
+        }
+      });
+    }
     
     return Array.from(tagsSet).sort();
-  }, [events]);
+  }, [events, groups]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1A1F2C] to-[#23283B]">

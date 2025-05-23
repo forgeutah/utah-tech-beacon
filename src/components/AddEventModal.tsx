@@ -33,6 +33,7 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
     meetup_link: "",
     luma_link: "",
     contact_email: "",
+    tags: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -58,7 +59,7 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
         country: "",
         contact_email: "" 
       });
-      setGroupData({ name: "", meetup_link: "", luma_link: "", contact_email: "" });
+      setGroupData({ name: "", meetup_link: "", luma_link: "", contact_email: "", tags: "" });
     }, 200);
   };
 
@@ -133,6 +134,12 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Process tags
+    const processedTags = groupData.tags
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(tag => tag.length > 0);
+
     // Scrape events before submitting group
     try {
       setScrapeError("");
@@ -161,6 +168,13 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
 
   async function handleApproveGroup() {
     setIsSubmitting(true);
+    
+    // Process tags
+    const processedTags = groupData.tags
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(tag => tag.length > 0);
+    
     // Insert group
     const { data: group, error } = await supabase
       .from("groups")
@@ -169,6 +183,7 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
         meetup_link: groupData.meetup_link,
         luma_link: groupData.luma_link,
         status: "pending",
+        tags: processedTags.length > 0 ? processedTags : null
       }).select().single();
 
     if (error) {
@@ -359,6 +374,11 @@ export default function AddEventModal({ open, onOpenChange }: { open: boolean, o
                   placeholder="Luma Link (optional)"
                   value={groupData.luma_link}
                   onChange={e => setGroupData(v => ({ ...v, luma_link: e.target.value }))}
+                />
+                <Input
+                  placeholder="Tags (comma separated, optional)"
+                  value={groupData.tags}
+                  onChange={e => setGroupData(v => ({ ...v, tags: e.target.value }))}
                 />
                 <Input
                   type="email"
