@@ -20,11 +20,10 @@ export default function Navbar() {
             href="https://github.com/forgeutah"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-white story-link"
+            className="text-muted-foreground hover:text-white story-link"
             aria-label="Forge Utah Foundation Github"
           >
             <Github className="w-5 h-5" />
-            <span>GitHub</span>
           </a>
           <button
             className="group flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-black font-semibold shadow-lg hover:scale-105 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 animate-fade-in"
