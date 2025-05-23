@@ -64,6 +64,7 @@ export function MultiSelectDropdown({
               key={group.id}
               checked={selectedGroups.includes(group.id)}
               onCheckedChange={() => handleGroupToggle(group.id)}
+              onSelect={(event) => event.preventDefault()}
               className="cursor-pointer"
             >
               {group.name}
