@@ -1,7 +1,7 @@
 
 import { Calendar } from "lucide-react";
 import { useState } from "react";
-import { EventsTable } from "@/components/EventsTable";
+import { EventsTimeline } from "@/components/EventsTimeline";
 import { MultiSelectDropdown } from "@/components/MultiSelectDropdown";
 import CalendarLinkModal from "@/components/CalendarLinkModal";
 
@@ -120,7 +120,7 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
             </button>
           </div>
           
-          <EventsTable 
+          <EventsTimeline 
             events={filteredEvents}
             isLoading={isLoading}
             error={error}
