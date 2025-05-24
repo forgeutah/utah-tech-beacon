@@ -35,14 +35,13 @@ export function CalendarView({ events, selectedDate, onDateSelect }: CalendarVie
 
   return (
     <div className="bg-gradient-to-br from-[#22243A]/80 via-[#23283B]/80 to-[#383B53]/80 backdrop-blur-sm border border-white/10 rounded-xl p-3">
-      <h3 className="text-lg font-semibold text-white mb-3">Calendar</h3>
       <Calendar
         mode="single"
         selected={selectedDate || undefined}
         onSelect={(date) => onDateSelect(date || null)}
         className="w-full pointer-events-auto"
         classNames={{
-          cell: "text-center text-sm p-0 relative",
+          cell: "text-center text-sm p-0 relative flex items-center justify-center",
           day: cn(
             "h-9 w-9 p-0 font-normal aria-selected:opacity-100 relative hover:bg-white/10 cursor-pointer rounded-full inline-flex items-center justify-center"
           ),
