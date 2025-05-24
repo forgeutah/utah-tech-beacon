@@ -1,4 +1,3 @@
-
 import { Calendar } from "lucide-react";
 import { useState } from "react";
 import { parseISO, isSameDay } from "date-fns";
@@ -138,7 +137,7 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
             </div>
 
             {/* Calendar sidebar */}
-            <div className="w-80 flex-shrink-0 space-y-4">
+            <div className="w-72 flex-shrink-0 space-y-4">
               {/* Buttons above calendar */}
               <div className="space-y-3">
                 <Button
