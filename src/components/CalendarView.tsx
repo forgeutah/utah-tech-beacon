@@ -45,8 +45,8 @@ export function CalendarView({ events, selectedDate, onDateSelect }: CalendarVie
           day: cn(
             "h-9 w-9 p-0 font-normal aria-selected:opacity-100 relative hover:bg-white/10 cursor-pointer"
           ),
-          day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
-          day_today: "bg-accent text-accent-foreground",
+          day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground rounded-full",
+          day_today: "text-primary font-semibold bg-transparent",
         }}
         modifiers={{
           hasEvents: (date) => hasEvents(date)
