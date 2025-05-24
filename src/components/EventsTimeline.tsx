@@ -130,7 +130,7 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
     <div className="space-y-8 relative">
       {/* Vertical dotted line */}
       {groupedEventsArray.length > 1 && (
-        <div className="absolute left-[4px] top-[40px] w-px h-full">
+        <div className="absolute left-[3px] top-[32px] w-px h-full">
           <div className="w-full h-full border-l-2 border-dotted border-white/20" />
         </div>
       )}
