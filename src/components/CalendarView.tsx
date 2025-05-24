@@ -39,7 +39,7 @@ export function CalendarView({ events, selectedDate, onDateSelect }: CalendarVie
         mode="single"
         selected={selectedDate || undefined}
         onSelect={(date) => onDateSelect(date || null)}
-        className="w-full pointer-events-auto"
+        className="w-full pointer-events-auto pl-0"
         classNames={{
           cell: "text-center text-sm p-0 relative flex items-center justify-center",
           day: cn(
