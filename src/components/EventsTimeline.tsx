@@ -217,7 +217,7 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
                         href={event.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary hover:text-primary/80 underline underline-offset-2 cursor-pointer transition-colors inline-flex items-center gap-2"
+                        className="text-white hover:text-primary cursor-pointer transition-colors inline-flex items-center gap-2"
                       >
                         {event.title}
                         <ExternalLink className="w-4 h-4" />

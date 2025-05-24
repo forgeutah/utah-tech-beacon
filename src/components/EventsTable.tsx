@@ -136,7 +136,7 @@ export function EventsTable({ events, isLoading, error, visibleCount, onShowMore
                           href={event.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-primary hover:text-primary/80 underline underline-offset-2 cursor-pointer transition-colors inline-flex items-center gap-1"
+                          className="text-white hover:text-primary cursor-pointer transition-colors inline-flex items-center gap-1"
                         >
                           {event.title}
                           <ExternalLink className="w-3 h-3" />
