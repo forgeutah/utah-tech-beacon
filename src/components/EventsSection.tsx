@@ -147,8 +147,8 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
               />
             </div>
 
-            {/* Calendar sidebar */}
-            <div className="w-72 flex-shrink-0 space-y-4">
+            {/* Calendar sidebar - hidden on mobile */}
+            <div className="hidden md:block w-72 flex-shrink-0 space-y-4">
               <Button
                 onClick={() => setShowAddEventModal(true)}
                 className="w-full flex items-center gap-2"
