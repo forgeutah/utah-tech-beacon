@@ -43,7 +43,7 @@ export function CalendarView({ events, selectedDate, onDateSelect }: CalendarVie
         className="w-full pointer-events-auto"
         classNames={{
           day: cn(
-            "h-9 w-9 p-0 font-normal aria-selected:opacity-100 relative hover:bg-white/10 cursor-pointer"
+            "h-9 w-9 p-0 font-normal aria-selected:opacity-100 relative hover:bg-white/10 cursor-pointer rounded-full"
           ),
           day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground rounded-full",
           day_today: "text-primary font-semibold bg-transparent",
