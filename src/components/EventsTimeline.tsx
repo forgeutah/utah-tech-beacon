@@ -66,6 +66,12 @@ const formatDayHeader = (date: Date) => {
   }
 };
 
+const openGoogleMaps = (location: string) => {
+  const encodedLocation = encodeURIComponent(location);
+  const url = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
+  window.open(url, '_blank');
+};
+
 export function EventsTimeline({ events, isLoading, error, visibleCount, onShowMore }: EventsTimelineProps) {
   if (isLoading) {
     return (
@@ -202,7 +208,16 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
                     {/* Location */}
                     <div className="flex items-center gap-2">
                       <MapPin className="w-4 h-4" />
-                      <span>{event.location || "TBD"}</span>
+                      {event.location && event.location !== "TBD" ? (
+                        <button
+                          onClick={() => openGoogleMaps(event.location!)}
+                          className="text-primary hover:text-primary/80 underline underline-offset-2 cursor-pointer transition-colors"
+                        >
+                          {event.location}
+                        </button>
+                      ) : (
+                        <span>TBD</span>
+                      )}
                     </div>
                   </div>
 
