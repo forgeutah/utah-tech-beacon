@@ -1,4 +1,3 @@
-
 import React from "react";
 import { format, parseISO, isSameDay, isToday, isTomorrow, isYesterday, isPast, formatDistanceToNow } from "date-fns";
 import { Badge } from "@/components/ui/badge";
@@ -128,10 +127,18 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
 
   return (
     <div className="space-y-8 relative">
-      {/* Vertical dotted line */}
+      {/* Vertical dotted line with fade out */}
       {groupedEventsArray.length > 1 && (
         <div className="absolute left-[3px] top-[32px] w-px h-full">
-          <div className="w-full h-full border-l-2 border-dotted border-white/20" />
+          <div 
+            className="w-full border-l-2 border-dotted border-white/20"
+            style={{
+              height: 'calc(100% - 120px)',
+              background: 'linear-gradient(to bottom, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.2) 80%, transparent 100%)',
+              maskImage: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 4px, black 4px, black 8px)',
+              WebkitMaskImage: 'repeating-linear-gradient(to bottom, transparent 0px, transparent 4px, black 4px, black 8px)'
+            }}
+          />
         </div>
       )}
       
