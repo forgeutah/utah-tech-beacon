@@ -28,18 +28,9 @@ export function CalendarView({ events, selectedDate, onDateSelect }: CalendarVie
   // Get dates that have events
   const eventDates = events.map(event => parseISO(event.event_date));
   
-  // Custom day content to show dots for event days
-  const renderDay = (date: Date) => {
-    const hasEvents = eventDates.some(eventDate => isSameDay(eventDate, date));
-    
-    return (
-      <div className="relative w-full h-full flex items-center justify-center">
-        <span>{format(date, 'd')}</span>
-        {hasEvents && (
-          <div className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
-        )}
-      </div>
-    );
+  // Check if a date has events
+  const hasEvents = (date: Date) => {
+    return eventDates.some(eventDate => isSameDay(eventDate, date));
   };
 
   return (
@@ -49,7 +40,7 @@ export function CalendarView({ events, selectedDate, onDateSelect }: CalendarVie
         mode="single"
         selected={selectedDate || undefined}
         onSelect={(date) => onDateSelect(date || null)}
-        className="w-full"
+        className="w-full pointer-events-auto"
         classNames={{
           day: cn(
             "h-9 w-9 p-0 font-normal aria-selected:opacity-100 relative hover:bg-white/10 cursor-pointer"
@@ -57,8 +48,11 @@ export function CalendarView({ events, selectedDate, onDateSelect }: CalendarVie
           day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
           day_today: "bg-accent text-accent-foreground",
         }}
-        components={{
-          Day: ({ date }) => renderDay(date),
+        modifiers={{
+          hasEvents: (date) => hasEvents(date)
+        }}
+        modifiersClassNames={{
+          hasEvents: "relative after:absolute after:bottom-0.5 after:left-1/2 after:transform after:-translate-x-1/2 after:w-1 after:h-1 after:bg-primary after:rounded-full"
         }}
       />
       {selectedDate && (
