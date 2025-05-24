@@ -117,6 +117,7 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
                     groups={groups || []}
                     selectedGroups={selectedGroups}
                     onSelectionChange={setSelectedGroups}
+                    placeholder="Groups"
                   />
                   
                   {allAvailableTags.length > 0 && (
@@ -124,7 +125,7 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
                       groups={allAvailableTags.map(tag => ({ id: tag, name: tag }))}
                       selectedGroups={selectedTags}
                       onSelectionChange={setSelectedTags}
-                      placeholder="Filter by tags"
+                      placeholder="Tags"
                     />
                   )}
                 </div>
