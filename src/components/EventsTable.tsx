@@ -19,6 +19,13 @@ interface Event {
   event_date: string;
   start_time?: string;
   location?: string;
+  venue_name?: string;
+  address_line_1?: string;
+  address_line_2?: string;
+  city?: string;
+  state_province?: string;
+  postal_code?: string;
+  country?: string;
   description?: string;
   tags?: string[];
   groups?: {
@@ -116,6 +123,7 @@ export function EventsTable({ events, isLoading, error, visibleCount, onShowMore
         <TableBody>
           {visibleEvents.map((event) => {
             const { dateDisplay, timeDisplay } = formatEventDateTime(event.event_date, event.start_time);
+            const displayLocation = event.venue_name || event.location;
             
             return (
               <TableRow key={event.id} className="border-b border-border hover:bg-white/5 transition">
@@ -146,7 +154,7 @@ export function EventsTable({ events, isLoading, error, visibleCount, onShowMore
                 </TableCell>
                 
                 <TableCell className="text-muted-foreground">
-                  {event.location || "TBD"}
+                  {displayLocation || "TBD"}
                 </TableCell>
                 
                 <TableCell>
