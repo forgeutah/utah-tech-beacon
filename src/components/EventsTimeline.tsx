@@ -129,14 +129,9 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
   return (
     <div className="space-y-8 relative">
       {/* Vertical dotted line */}
-      {groupedEventsArray.length > 0 && (
-        <div className="absolute left-[9px] top-[24px] w-px">
-          <div 
-            className="w-full border-l border-dotted border-white/20"
-            style={{
-              height: `calc(100% - 104px)`
-            }}
-          ></div>
+      {groupedEventsArray.length > 1 && (
+        <div className="absolute left-[4px] top-[40px] w-px h-full">
+          <div className="w-full h-full border-l-2 border-dotted border-white/20" />
         </div>
       )}
       
