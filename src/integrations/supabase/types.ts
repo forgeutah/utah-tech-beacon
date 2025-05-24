@@ -22,6 +22,7 @@ export type Database = {
           external_id: string | null
           group_id: string
           id: string
+          image: string | null
           link: string | null
           location: string | null
           postal_code: string | null
@@ -45,6 +46,7 @@ export type Database = {
           external_id?: string | null
           group_id: string
           id?: string
+          image?: string | null
           link?: string | null
           location?: string | null
           postal_code?: string | null
@@ -68,6 +70,7 @@ export type Database = {
           external_id?: string | null
           group_id?: string
           id?: string
+          image?: string | null
           link?: string | null
           location?: string | null
           postal_code?: string | null
@@ -91,6 +94,7 @@ export type Database = {
       }
       groups: {
         Row: {
+          banner_image: string | null
           created_at: string
           description: string | null
           id: string
@@ -104,6 +108,7 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          banner_image?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -117,6 +122,7 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          banner_image?: string | null
           created_at?: string
           description?: string | null
           id?: string

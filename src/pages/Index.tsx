@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import React from "react";
@@ -32,43 +33,7 @@ async function fetchUpcomingEvents() {
 
   if (error) throw error;
   
-  // Add sample events for demo purposes
-  const sampleEvents = [
-    {
-      id: "sample-1",
-      title: "React Meetup - State Management",
-      event_date: "2025-05-25",
-      start_time: "18:00",
-      location: "Tech Hub Downtown",
-      status: "approved",
-      group_id: "sample-group-1",
-      description: "Join us for an in-depth discussion about state management in React applications.",
-      tags: ["React", "JavaScript", "Frontend"],
-      groups: {
-        name: "React Developers",
-        status: "approved",
-        tags: ["React", "JavaScript"]
-      }
-    },
-    {
-      id: "sample-2", 
-      title: "Evening Networking Social",
-      event_date: "2025-05-25",
-      start_time: "20:30",
-      location: "Rooftop Bar & Grill",
-      status: "approved",
-      group_id: "sample-group-2",
-      description: "Casual networking event for tech professionals. Come meet fellow developers and share experiences.",
-      tags: ["Networking", "Social", "Community"],
-      groups: {
-        name: "Tech Professionals Network",
-        status: "approved", 
-        tags: ["Networking", "Community"]
-      }
-    }
-  ];
-
-  return [...sampleEvents, ...(data || [])];
+  return data || [];
 }
 
 // Fetch all approved groups for the filter
