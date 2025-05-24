@@ -16,6 +16,7 @@ interface Event {
   event_date: string;
   start_time?: string;
   location?: string;
+  link?: string;
   description?: string;
   tags?: string[];
   groups?: {

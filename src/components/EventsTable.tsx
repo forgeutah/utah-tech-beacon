@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Tag } from "lucide-react";
+import { Tag, ExternalLink } from "lucide-react";
 import { format, formatDistanceToNow, isToday, isTomorrow, isYesterday, isPast, parseISO } from "date-fns";
 import {
   Table,
@@ -26,6 +26,7 @@ interface Event {
   state_province?: string;
   postal_code?: string;
   country?: string;
+  link?: string;
   description?: string;
   tags?: string[];
   groups?: {
@@ -129,7 +130,21 @@ export function EventsTable({ events, isLoading, error, visibleCount, onShowMore
               <TableRow key={event.id} className="border-b border-border hover:bg-white/5 transition">
                 <TableCell className="text-white font-medium">
                   <div>
-                    <div className="font-medium">{event.title}</div>
+                    <div className="font-medium">
+                      {event.link ? (
+                        <a
+                          href={event.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:text-primary/80 underline underline-offset-2 cursor-pointer transition-colors inline-flex items-center gap-1"
+                        >
+                          {event.title}
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      ) : (
+                        event.title
+                      )}
+                    </div>
                     {event.description && (
                       <div className="text-sm text-muted-foreground mt-1 line-clamp-2">
                         {event.description}

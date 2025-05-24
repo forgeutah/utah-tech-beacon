@@ -2,7 +2,7 @@
 import React from "react";
 import { format, parseISO, isSameDay, isToday, isTomorrow, isYesterday, isPast, formatDistanceToNow } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Clock, Users } from "lucide-react";
+import { MapPin, Clock, Users, ExternalLink } from "lucide-react";
 
 interface Event {
   id: string;
@@ -17,6 +17,7 @@ interface Event {
   state_province?: string;
   postal_code?: string;
   country?: string;
+  link?: string;
   description?: string;
   tags?: string[];
   groups?: {
@@ -211,7 +212,19 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
 
                   {/* Event title */}
                   <h3 className="text-xl font-semibold text-white mb-2">
-                    {event.title}
+                    {event.link ? (
+                      <a
+                        href={event.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:text-primary/80 underline underline-offset-2 cursor-pointer transition-colors inline-flex items-center gap-2"
+                      >
+                        {event.title}
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    ) : (
+                      event.title
+                    )}
                   </h3>
 
                   {/* Event description */}

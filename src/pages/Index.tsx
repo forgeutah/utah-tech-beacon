@@ -24,6 +24,7 @@ async function fetchUpcomingEvents() {
       state_province,
       postal_code,
       country,
+      link,
       status,
       group_id,
       description,
