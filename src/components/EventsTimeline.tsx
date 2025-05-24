@@ -111,6 +111,19 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
     return groups;
   }, {} as Record<string, { date: Date; events: Event[] }>);
 
+  // Sort events within each day by start_time
+  Object.values(groupedEvents).forEach(group => {
+    group.events.sort((a, b) => {
+      // Events without start_time should come last
+      if (!a.start_time && !b.start_time) return 0;
+      if (!a.start_time) return 1;
+      if (!b.start_time) return -1;
+      
+      // Compare start times
+      return a.start_time.localeCompare(b.start_time);
+    });
+  });
+
   const groupedEventsArray = Object.entries(groupedEvents);
 
   return (
