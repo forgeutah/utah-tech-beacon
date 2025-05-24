@@ -136,7 +136,7 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
                   className="flex items-center gap-2 px-4 py-2 text-sm bg-primary/10 text-primary border border-primary rounded-md hover:bg-primary hover:text-black transition-colors"
                 >
                   <Calendar className="w-4 h-4" />
-                  Get Calendar Link
+                  iCal
                 </button>
               </div>
               
