@@ -43,8 +43,8 @@ export function CalendarView({ events, selectedDate, onDateSelect }: CalendarVie
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#22243A]/80 via-[#23283B]/80 to-[#383B53]/80 backdrop-blur-sm border border-white/10 rounded-xl p-4">
-      <h3 className="text-lg font-semibold text-white mb-4">Calendar</h3>
+    <div className="bg-gradient-to-br from-[#22243A]/80 via-[#23283B]/80 to-[#383B53]/80 backdrop-blur-sm border border-white/10 rounded-xl p-3">
+      <h3 className="text-lg font-semibold text-white mb-3">Calendar</h3>
       <Calendar
         mode="single"
         selected={selectedDate || undefined}
@@ -62,7 +62,7 @@ export function CalendarView({ events, selectedDate, onDateSelect }: CalendarVie
         }}
       />
       {selectedDate && (
-        <div className="mt-4 pt-4 border-t border-white/10">
+        <div className="mt-3 pt-3 border-t border-white/10">
           <button
             onClick={() => onDateSelect(null)}
             className="text-sm text-primary hover:text-primary/80 transition-colors"
