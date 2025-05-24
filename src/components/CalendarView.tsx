@@ -42,8 +42,9 @@ export function CalendarView({ events, selectedDate, onDateSelect }: CalendarVie
         onSelect={(date) => onDateSelect(date || null)}
         className="w-full pointer-events-auto"
         classNames={{
+          cell: "text-center text-sm p-0 relative",
           day: cn(
-            "h-9 w-9 p-0 font-normal aria-selected:opacity-100 relative hover:bg-white/10 cursor-pointer rounded-full"
+            "h-9 w-9 p-0 font-normal aria-selected:opacity-100 relative hover:bg-white/10 cursor-pointer rounded-full inline-flex items-center justify-center"
           ),
           day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground rounded-full",
           day_today: "text-primary font-semibold bg-transparent",
