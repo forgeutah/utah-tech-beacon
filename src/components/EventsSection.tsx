@@ -1,3 +1,4 @@
+
 import { Calendar } from "lucide-react";
 import { useState } from "react";
 import { parseISO, isSameDay } from "date-fns";
@@ -110,21 +111,31 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
           <div className="flex gap-8">
             {/* Main content */}
             <div className="flex-1">
-              <div className="flex items-center gap-4 mb-6">
-                <MultiSelectDropdown
-                  groups={groups || []}
-                  selectedGroups={selectedGroups}
-                  onSelectionChange={setSelectedGroups}
-                />
-                
-                {allAvailableTags.length > 0 && (
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-4">
                   <MultiSelectDropdown
-                    groups={allAvailableTags.map(tag => ({ id: tag, name: tag }))}
-                    selectedGroups={selectedTags}
-                    onSelectionChange={setSelectedTags}
-                    placeholder="Filter by tags"
+                    groups={groups || []}
+                    selectedGroups={selectedGroups}
+                    onSelectionChange={setSelectedGroups}
                   />
-                )}
+                  
+                  {allAvailableTags.length > 0 && (
+                    <MultiSelectDropdown
+                      groups={allAvailableTags.map(tag => ({ id: tag, name: tag }))}
+                      selectedGroups={selectedTags}
+                      onSelectionChange={setSelectedTags}
+                      placeholder="Filter by tags"
+                    />
+                  )}
+                </div>
+                
+                <button
+                  onClick={() => setShowCalendarModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 text-sm bg-primary/10 text-primary border border-primary rounded-md hover:bg-primary hover:text-black transition-colors"
+                >
+                  <Calendar className="w-4 h-4" />
+                  Get Calendar Link
+                </button>
               </div>
               
               <EventsTimeline 
@@ -138,24 +149,13 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
 
             {/* Calendar sidebar */}
             <div className="w-72 flex-shrink-0 space-y-4">
-              {/* Buttons above calendar */}
-              <div className="space-y-3">
-                <Button
-                  onClick={() => setShowAddEventModal(true)}
-                  className="w-full flex items-center gap-2"
-                >
-                  <Plus className="w-4 h-4" />
-                  Add Event
-                </Button>
-                
-                <button
-                  onClick={() => setShowCalendarModal(true)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm bg-primary/10 text-primary border border-primary rounded-md hover:bg-primary hover:text-black transition-colors"
-                >
-                  <Calendar className="w-4 h-4" />
-                  Get Calendar Link
-                </button>
-              </div>
+              <Button
+                onClick={() => setShowAddEventModal(true)}
+                className="w-full flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Add Event
+              </Button>
 
               <CalendarView
                 events={events || []}
