@@ -107,7 +107,7 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
   return (
     <>
       <section className="flex flex-col items-center flex-1 mb-10 px-4">
-        <div className="max-w-7xl w-full">
+        <div className="max-w-6xl w-full">
           <div className="flex gap-8">
             {/* Main content */}
             <div className="flex-1">
