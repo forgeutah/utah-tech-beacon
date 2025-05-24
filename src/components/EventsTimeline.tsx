@@ -1,3 +1,4 @@
+
 import React from "react";
 import { format, parseISO, isSameDay, isToday, isTomorrow, isYesterday, isPast, formatDistanceToNow } from "date-fns";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,13 @@ interface Event {
   event_date: string;
   start_time?: string;
   location?: string;
+  venue_name?: string;
+  address_line_1?: string;
+  address_line_2?: string;
+  city?: string;
+  state_province?: string;
+  postal_code?: string;
+  country?: string;
   description?: string;
   tags?: string[];
   groups?: {
@@ -66,10 +74,28 @@ const formatDayHeader = (date: Date) => {
   }
 };
 
-const openGoogleMaps = (location: string) => {
-  const encodedLocation = encodeURIComponent(location);
-  const url = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
-  window.open(url, '_blank');
+const buildFullAddress = (event: Event) => {
+  const addressParts = [];
+  
+  if (event.address_line_1) addressParts.push(event.address_line_1);
+  if (event.address_line_2) addressParts.push(event.address_line_2);
+  if (event.city) addressParts.push(event.city);
+  if (event.state_province) addressParts.push(event.state_province);
+  if (event.postal_code) addressParts.push(event.postal_code);
+  if (event.country) addressParts.push(event.country);
+  
+  return addressParts.join(', ');
+};
+
+const openGoogleMaps = (event: Event) => {
+  const fullAddress = buildFullAddress(event);
+  const searchQuery = fullAddress || event.venue_name || event.location || '';
+  
+  if (searchQuery) {
+    const encodedLocation = encodeURIComponent(searchQuery);
+    const url = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
+    window.open(url, '_blank');
+  }
 };
 
 export function EventsTimeline({ events, isLoading, error, visibleCount, onShowMore }: EventsTimelineProps) {
@@ -167,6 +193,8 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
           <div className="ml-6 space-y-4">
             {dayEvents.map((event) => {
               const { timeDisplay } = formatEventDateTime(event.event_date, event.start_time);
+              const displayLocation = event.venue_name || event.location;
+              const hasAddressInfo = buildFullAddress(event) || event.venue_name || event.location;
               
               return (
                 <div
@@ -208,15 +236,15 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
                     {/* Location */}
                     <div className="flex items-center gap-2">
                       <MapPin className="w-4 h-4" />
-                      {event.location && event.location !== "TBD" ? (
+                      {displayLocation && displayLocation !== "TBD" && hasAddressInfo ? (
                         <button
-                          onClick={() => openGoogleMaps(event.location!)}
+                          onClick={() => openGoogleMaps(event)}
                           className="text-primary hover:text-primary/80 underline underline-offset-2 cursor-pointer transition-colors"
                         >
-                          {event.location}
+                          {displayLocation}
                         </button>
                       ) : (
-                        <span>TBD</span>
+                        <span>{displayLocation || "TBD"}</span>
                       )}
                     </div>
                   </div>
