@@ -111,7 +111,7 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
           <div className="flex gap-8">
             {/* Main content */}
             <div className="flex-1">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-6 ml-6">
                 <div className="flex items-center gap-4">
                   <MultiSelectDropdown
                     groups={groups || []}
