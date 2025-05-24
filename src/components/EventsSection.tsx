@@ -1,7 +1,10 @@
+
 import { Calendar } from "lucide-react";
 import { useState } from "react";
+import { parseISO, isSameDay } from "date-fns";
 import { EventsTimeline } from "@/components/EventsTimeline";
 import { MultiSelectDropdown } from "@/components/MultiSelectDropdown";
+import { CalendarView } from "@/components/CalendarView";
 import CalendarLinkModal from "@/components/CalendarLinkModal";
 
 interface Event {
@@ -36,6 +39,7 @@ interface EventsSectionProps {
 export default function EventsSection({ events, groups, isLoading, error, allTags }: EventsSectionProps) {
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [visibleEventCount, setVisibleEventCount] = useState(10);
   const [showCalendarModal, setShowCalendarModal] = useState(false);
 
@@ -60,7 +64,7 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
       .flatMap(group => group.tags || [])
   ])].sort();
 
-  // Filter events based on selected groups and tags
+  // Filter events based on selected groups, tags, and date
   const filteredEvents = events?.filter((event: Event) => {
     // Only show event if group is null (unlisted) or group.status is approved
     if (event.groups && event.groups.status !== "approved") {
@@ -81,6 +85,14 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
       }
     }
     
+    // Filter by selected date
+    if (selectedDate) {
+      const eventDate = parseISO(event.event_date);
+      if (!isSameDay(eventDate, selectedDate)) {
+        return false;
+      }
+    }
+    
     return true;
   }) || [];
 
@@ -91,41 +103,55 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
   return (
     <>
       <section className="flex flex-col items-center flex-1 mb-10 px-4">
-        <div className="max-w-6xl w-full">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <MultiSelectDropdown
-                groups={groups || []}
-                selectedGroups={selectedGroups}
-                onSelectionChange={setSelectedGroups}
-              />
+        <div className="max-w-7xl w-full">
+          <div className="flex gap-8">
+            {/* Main content */}
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-4">
+                  <MultiSelectDropdown
+                    groups={groups || []}
+                    selectedGroups={selectedGroups}
+                    onSelectionChange={setSelectedGroups}
+                  />
+                  
+                  {allAvailableTags.length > 0 && (
+                    <MultiSelectDropdown
+                      groups={allAvailableTags.map(tag => ({ id: tag, name: tag }))}
+                      selectedGroups={selectedTags}
+                      onSelectionChange={setSelectedTags}
+                      placeholder="Filter by tags"
+                    />
+                  )}
+                </div>
+                
+                <button
+                  onClick={() => setShowCalendarModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 text-sm bg-primary/10 text-primary border border-primary rounded-md hover:bg-primary hover:text-black transition-colors"
+                >
+                  <Calendar className="w-4 h-4" />
+                  Get Calendar Link
+                </button>
+              </div>
               
-              {allAvailableTags.length > 0 && (
-                <MultiSelectDropdown
-                  groups={allAvailableTags.map(tag => ({ id: tag, name: tag }))}
-                  selectedGroups={selectedTags}
-                  onSelectionChange={setSelectedTags}
-                  placeholder="Filter by tags"
-                />
-              )}
+              <EventsTimeline 
+                events={filteredEvents}
+                isLoading={isLoading}
+                error={error}
+                visibleCount={visibleEventCount}
+                onShowMore={handleShowMore}
+              />
             </div>
-            
-            <button
-              onClick={() => setShowCalendarModal(true)}
-              className="flex items-center gap-2 px-4 py-2 text-sm bg-primary/10 text-primary border border-primary rounded-md hover:bg-primary hover:text-black transition-colors"
-            >
-              <Calendar className="w-4 h-4" />
-              Get Calendar Link
-            </button>
+
+            {/* Calendar sidebar */}
+            <div className="w-80 flex-shrink-0">
+              <CalendarView
+                events={events || []}
+                selectedDate={selectedDate}
+                onDateSelect={setSelectedDate}
+              />
+            </div>
           </div>
-          
-          <EventsTimeline 
-            events={filteredEvents}
-            isLoading={isLoading}
-            error={error}
-            visibleCount={visibleEventCount}
-            onShowMore={handleShowMore}
-          />
         </div>
       </section>
 
