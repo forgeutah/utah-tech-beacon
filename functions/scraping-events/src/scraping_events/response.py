@@ -5,6 +5,7 @@ from pydantic import AwareDatetime, BaseModel, Field
 
 class Event(BaseModel):
     title: str
+    url: str
     time: AwareDatetime
 
 

@@ -45,6 +45,8 @@ async def _get_event_details(page_wrapper: PageWrapper, event_url: str) -> Event
     LOGGER.info(f"Getting details for event at {event_url}")
     await page_wrapper.navigate(event_url)
     page = page_wrapper.page
+    # title
+    event_title = await page.get_by_role("heading", level=1).inner_text()
     # time
     bottom_action_bar = page.locator("[data-event-label='action-bar']")
     event_time_display = bottom_action_bar.locator("[datetime]")
@@ -54,7 +56,7 @@ async def _get_event_details(page_wrapper: PageWrapper, event_url: str) -> Event
     event_time = _parse_timestamp(event_time_str)
 
     # TODO
-    return Event(title=event_url, time=event_time)
+    return Event(title=event_title, url=event_url, time=event_time)
 
 
 def _parse_timestamp(timestamp_str: str) -> datetime:
