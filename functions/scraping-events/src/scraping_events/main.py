@@ -14,7 +14,8 @@ LOGGER = logging.getLogger(__name__)
 
 async def _main_async(url: str) -> ResponseSuccess:
     async with launch_browser() as browser:
-        return await scrape_events(browser, url)
+        events = await scrape_events(browser, url)
+        return ResponseSuccess(events=events)
 
 
 def main():
