@@ -12,5 +12,8 @@ uv run playwright install --with-deps --no-shell chromium
 
 if ! [ -f .env ] ; then
     echo "Seeding .env file..."
-    echo "DEBUG=1" > .env
+    {
+        echo "DEBUG=1"
+        echo "PLAYWRIGHT_TIMEOUT_MS=5000"
+    } > .env
 fi

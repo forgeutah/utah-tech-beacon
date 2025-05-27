@@ -30,7 +30,9 @@ async def launch_browser() -> AsyncGenerator[Browser]:
 @asynccontextmanager
 async def launch_browser_context(browser: Browser) -> AsyncGenerator[BrowserContext]:
     async with await browser.new_context(timezone_id="UTC") as browser_context:
-        record_trace = get_env().debug
+        env = get_env()
+        browser_context.set_default_timeout(env.playwright_timeout_ms)
+        record_trace = env.debug
         if record_trace:
             try:
                 await browser_context.tracing.start(snapshots=True, screenshots=True, sources=True)
