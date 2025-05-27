@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
 set -e
+cd "$(dirname "$0")"
 
 if ! command -v uv ; then
     echo "please install uv: https://docs.astral.sh/uv/getting-started/installation/"
