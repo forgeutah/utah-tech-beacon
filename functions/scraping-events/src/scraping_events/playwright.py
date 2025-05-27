@@ -22,7 +22,7 @@ _TRACES_DIR = Path("traces")
 async def launch_browser() -> AsyncGenerator[Browser]:
     async with (
         async_playwright() as pw,
-        await pw.chromium.launch(headless=_HEADLESS) as browser,
+        await pw.chromium.launch(headless=_HEADLESS, channel="chromium") as browser,
     ):
         yield browser
 
