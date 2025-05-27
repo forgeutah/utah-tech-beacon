@@ -38,8 +38,6 @@ select = [
 extend-ignore = [
     # explicit conflicts with auto-formatter:
     "W191", "E111", "E114", "E117", "D206", "D300", "Q000", "Q001", "Q002", "Q003", "COM812", "COM819", "E501",
-    # whitespace and formatting taken care of by pre-commit:
-    "W",
     # comments are always fine:
     "TD", "FIX", "ERA",
     # don't care:
