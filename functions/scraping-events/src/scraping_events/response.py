@@ -1,10 +1,11 @@
 from typing import Annotated, Literal, Self
 
-from pydantic import BaseModel, Field
+from pydantic import AwareDatetime, BaseModel, Field
 
 
 class Event(BaseModel):
     title: str
+    time: AwareDatetime
 
 
 class ResponseSuccess(BaseModel):

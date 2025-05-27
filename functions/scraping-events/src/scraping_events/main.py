@@ -12,18 +12,19 @@ set_logging_config()  # not main-guarded, so it's inherited by subprocesses
 LOGGER = logging.getLogger(__name__)
 
 
-async def _main_async(url: str) -> ResponseSuccess:
+async def _main_async(url: str, max_events: int) -> ResponseSuccess:
     async with launch_browser() as browser:
-        events = await scrape_events(browser, url)
+        events = await scrape_events(browser, url, max_events)
         return ResponseSuccess(events=events)
 
 
 def main():
     arg_parser = ArgumentParser()
     arg_parser.add_argument("url", help="Web URL to scrape events from")
+    arg_parser.add_argument("--max-events", type=int, default=3, help="Maximum number of events to return")
     args = arg_parser.parse_args()
     try:
-        response = asyncio.run(_main_async(args.url))
+        response = asyncio.run(_main_async(args.url, args.max_events))
     except Exception as e:
         print(ResponseError.from_exception(e).model_dump_json(indent=2))  # noqa: T201
         raise

@@ -10,3 +10,7 @@ class NavigationError(Exception):
 
     def __init__(self, url: str):
         super().__init__(url)
+
+
+class ParsingError(Exception):
+    """Failed to parse critical information from the event provider"""

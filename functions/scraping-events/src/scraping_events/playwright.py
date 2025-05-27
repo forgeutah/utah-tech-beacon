@@ -44,7 +44,7 @@ async def launch_browser_context(browser: Browser) -> AsyncGenerator[BrowserCont
             if record_trace:
                 try:
                     _TRACES_DIR.mkdir(parents=True, exist_ok=True)
-                    timestamp = datetime.now(UTC).strftime("%Y-%m-%d-%H-%M-%S")
+                    timestamp = datetime.now(UTC).strftime("%Y_%m_%d-%H_%M_%S")
                     hex_ = "".join(random.choices("0123456789abcdef", k=4))
                     trace_path = _TRACES_DIR / f"trace-{timestamp}-{hex_}.zip"
                     await browser_context.tracing.stop(path=trace_path)
@@ -68,7 +68,7 @@ class PageWrapper:
         super().__init__()
         self.page = page
 
-    async def goto(self, url: str):
+    async def navigate(self, url: str):
         for attempt in range(3):
             if attempt > 0:
                 await asyncio.sleep(5)

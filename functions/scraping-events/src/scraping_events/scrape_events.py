@@ -16,7 +16,7 @@ LOGGER = logging.getLogger(__name__)
 class EventProvider:
     name: str
     identifier: Callable[[ParsedUrl], bool]
-    scrape_func: Callable[[Browser, str], Awaitable[list[Event]]]
+    scrape_func: Callable[[Browser, str, int], Awaitable[list[Event]]]
 
 
 EVENT_PROVIDERS: list[EventProvider] = [
@@ -28,12 +28,12 @@ EVENT_PROVIDERS: list[EventProvider] = [
 ]
 
 
-async def scrape_events(browser: Browser, url: str) -> list[Event]:
+async def scrape_events(browser: Browser, url: str, max_events: int) -> list[Event]:
     LOGGER.info(f"Processing URL: {url}")
     url_parsed = urlparse(url, allow_fragments=False)
     for event_provider in EVENT_PROVIDERS:
         if event_provider.identifier(url_parsed):
             LOGGER.info(f"URL recognized as belonging to event provider {event_provider.name}")
-            return await event_provider.scrape_func(browser, url)
+            return await event_provider.scrape_func(browser, url, max_events)
     # no match
     raise UnknownEventProviderError(url)
