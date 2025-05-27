@@ -24,7 +24,7 @@ def main():
     try:
         response = asyncio.run(_main_async(args.url))
     except Exception as e:
-        print(ResponseError(error_class=type(e).__name__, detail=str(e)))  # noqa: T201
+        print(ResponseError.from_exception(e).model_dump_json(indent=2))  # noqa: T201
         raise
     else:
         print(response.model_dump_json(indent=2))  # noqa: T201
