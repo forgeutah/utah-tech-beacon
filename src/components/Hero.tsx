@@ -13,7 +13,15 @@ export default function Hero() {
         The Utah Developer Community Calendar – your source for all{" "}
         <span className="text-primary font-semibold">technology events</span>{" "}
         across Utah. Powered by{" "}
-        <span className="text-white font-bold">Forge Utah Foundation</span>.
+        <a
+          href="https://forgeutah.tech"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white font-bold underline hover:text-primary transition-colors"
+        >
+          Forge Utah Foundation
+        </a>
+        .
       </p>
     </section>
   );
