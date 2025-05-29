@@ -66,10 +66,14 @@ async def _get_event_details(page_wrapper: PageWrapper, event_url: str) -> Event
         venue_url = await venue_location_link.get_attribute("href")
         if venue_url:
             break
+    else:  # never hit break
+        LOGGER.warning(f"Failed to find venue URL for event at {event_url}")
     venue_address = await page.get_by_test_id("location-info").inner_text()
     venue_address = re.sub(r"\s*·\s*", ", ", venue_address).strip()
     # image
     image_url = await page.get_by_test_id("event-description-image").locator("img").get_attribute("src")
+    if not image_url:
+        LOGGER.warning(f"Failed to find image URL for event at {event_url}")
     # wrap it up nicely
     return Event(
         url=event_url,
