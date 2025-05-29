@@ -1,3 +1,7 @@
+#supabase
+supabase/.branches
+supabase/.temp
+
 # Logs
 logs
 *.log

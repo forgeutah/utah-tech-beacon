@@ -1,4 +1,3 @@
-
 import { Calendar } from "lucide-react";
 import { useState } from "react";
 import { parseISO, isSameDay } from "date-fns";
@@ -159,8 +158,9 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
                 Add Event
               </Button>
 
+              {/* Pass filteredEvents instead of events */}
               <CalendarView
-                events={events || []}
+                events={filteredEvents}
                 selectedDate={selectedDate}
                 onDateSelect={setSelectedDate}
               />
