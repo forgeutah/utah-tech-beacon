@@ -1,0 +1,10 @@
+**/.git/
+**/.gitignore
+**/.idea/
+**/.mypy_cache/
+**/.pdm-build/
+**/.ruff_cache/
+**/.venv/
+**/venv/
+**/traces/
+**/__pycache__/
