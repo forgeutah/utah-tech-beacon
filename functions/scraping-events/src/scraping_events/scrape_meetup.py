@@ -6,7 +6,7 @@ from urllib.parse import ParseResult as ParsedUrl
 from playwright.async_api import Browser, expect as pw_expect
 
 from scraping_events.exceptions import ParsingError
-from scraping_events.playwright import PageWrapper
+from scraping_events.playwright_utils import PageWrapper
 from scraping_events.response import Event
 
 LOGGER = logging.getLogger(__name__)

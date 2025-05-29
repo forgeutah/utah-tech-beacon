@@ -3,7 +3,7 @@ import logging
 from argparse import ArgumentParser
 
 from scraping_events.logging_config import set_logging_config
-from scraping_events.playwright import launch_browser
+from scraping_events.playwright_utils import launch_browser
 from scraping_events.response import ResponseError, ResponseSuccess
 from scraping_events.scrape_events import scrape_events
 
