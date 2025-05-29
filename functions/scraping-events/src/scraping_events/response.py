@@ -4,9 +4,14 @@ from pydantic import AwareDatetime, BaseModel, Field
 
 
 class Event(BaseModel):
-    title: str
     url: str
+    title: str
+    description: str
     time: AwareDatetime
+    venue_name: str
+    venue_url: str | None
+    venue_address: str
+    image_url: str | None
 
 
 class ResponseSuccess(BaseModel):

@@ -47,6 +47,10 @@ async def _get_event_details(page_wrapper: PageWrapper, event_url: str) -> Event
     page = page_wrapper.page
     # title
     event_title = await page.get_by_role("heading", level=1).inner_text()
+    event_title = event_title.strip()
+    # description
+    event_description = await page.locator("#event-details .break-words").inner_text()
+    event_description = event_description.strip()
     # time
     bottom_action_bar = page.locator("[data-event-label='action-bar']")
     event_time_display = bottom_action_bar.locator("[datetime]")
@@ -54,9 +58,29 @@ async def _get_event_details(page_wrapper: PageWrapper, event_url: str) -> Event
     if event_time_str is None:
         raise ParsingError(f"Failed to get event time from {event_url}")
     event_time = _parse_timestamp(event_time_str)
-
-    # TODO
-    return Event(title=event_title, url=event_url, time=event_time)
+    # venue
+    venue_name_link = page.get_by_test_id("venue-name-link")
+    venue_name = await venue_name_link.inner_text()
+    venue_name = venue_name.strip()
+    for venue_location_link in (venue_name_link, page.get_by_test_id("map-link")):
+        venue_url = await venue_location_link.get_attribute("href")
+        if venue_url:
+            break
+    venue_address = await page.get_by_test_id("location-info").inner_text()
+    venue_address = re.sub(r"\s*·\s*", ", ", venue_address).strip()
+    # image
+    image_url = await page.get_by_test_id("event-description-image").locator("img").get_attribute("src")
+    # wrap it up nicely
+    return Event(
+        url=event_url,
+        title=event_title,
+        description=event_description,
+        time=event_time,
+        venue_name=venue_name,
+        venue_url=venue_url,
+        venue_address=venue_address,
+        image_url=image_url,
+    )
 
 
 def _parse_timestamp(timestamp_str: str) -> datetime:
