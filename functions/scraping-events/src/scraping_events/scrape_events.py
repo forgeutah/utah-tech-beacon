@@ -34,6 +34,8 @@ async def scrape_events(browser: Browser, url: str, max_events: int) -> list[Eve
     for event_provider in EVENT_PROVIDERS:
         if event_provider.identifier(url_parsed):
             LOGGER.info(f"URL recognized as belonging to event provider {event_provider.name}")
-            return await event_provider.scrape_func(browser, url, max_events)
+            scraped_events = await event_provider.scrape_func(browser, url, max_events)
+            LOGGER.info(f"Successfully scraped {len(scraped_events)} events from {url}")
+            return scraped_events
     # no match
     raise UnknownEventProviderError(url)
