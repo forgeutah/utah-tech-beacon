@@ -3,7 +3,7 @@ import re
 from datetime import UTC, datetime
 from urllib.parse import ParseResult as ParsedUrl
 
-from playwright.async_api import Browser, Error as PlaywrightError, expect as pw_expect
+from playwright.async_api import Browser, expect as pw_expect
 
 from scraping_events.exceptions import ParsingError
 from scraping_events.playwright import PageWrapper
@@ -30,7 +30,7 @@ async def _get_upcoming_event_urls(page_wrapper: PageWrapper, starting_url: str,
         event_card = page.locator(f"#event-card-e-{event_number}")
         try:
             await pw_expect(event_card).to_be_visible()
-        except PlaywrightError:
+        except AssertionError:
             LOGGER.info(f"Failed to find event #{event_number}; stopping", exc_info=True)
             break
         event_url = await event_card.get_attribute("href")
