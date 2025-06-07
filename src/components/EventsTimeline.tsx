@@ -23,6 +23,7 @@ interface Event {
   groups?: {
     name: string;
     status: string;
+    tags?: string[];
   } | null;
 }
 
@@ -97,6 +98,16 @@ const openGoogleMaps = (event: Event) => {
     const url = `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`;
     window.open(url, '_blank');
   }
+};
+
+const getEventTags = (event: Event) => {
+  // Use event tags if available, otherwise fall back to group tags
+  if (event.tags && event.tags.length > 0) {
+    return event.tags;
+  }
+  
+  // Return group tags if event has no tags
+  return event.groups?.tags || [];
 };
 
 export function EventsTimeline({ events, isLoading, error, visibleCount, onShowMore }: EventsTimelineProps) {
@@ -196,6 +207,7 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
               const { timeDisplay } = formatEventDateTime(event.event_date, event.start_time);
               const displayLocation = event.venue_name || event.location;
               const hasAddressInfo = buildFullAddress(event) || event.venue_name || event.location;
+              const eventTags = getEventTags(event);
               
               return (
                 <div
@@ -263,9 +275,9 @@ export function EventsTimeline({ events, isLoading, error, visibleCount, onShowM
                   </div>
 
                   {/* Tags */}
-                  {event.tags && event.tags.length > 0 && (
+                  {eventTags.length > 0 && (
                     <div className="flex flex-wrap gap-2">
-                      {event.tags.map((tag, index) => (
+                      {eventTags.map((tag, index) => (
                         <Badge 
                           key={index} 
                           variant="outline" 
