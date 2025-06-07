@@ -3,7 +3,7 @@ import re
 from datetime import UTC, datetime
 from urllib.parse import ParseResult as ParsedUrl
 
-from playwright.async_api import Browser, expect as pw_expect
+from playwright.async_api import Browser, TimeoutError as PlaywrightTimeoutError, expect as pw_expect
 
 from scraping_events.exceptions import ParsingError
 from scraping_events.playwright_utils import PageWrapper
@@ -23,7 +23,11 @@ async def _get_upcoming_event_urls(page_wrapper: PageWrapper, starting_url: str,
     LOGGER.info(f"Looking for upcoming events listed on {starting_url}")
     await page_wrapper.navigate(starting_url)
     page = page_wrapper.page
-    await page.locator("#see-all-upcoming-events-button").click()
+    try:
+        await page.locator("#see-all-upcoming-events-button").click()
+    except PlaywrightTimeoutError:
+        LOGGER.info(f"No upcoming events listed on {starting_url}")
+        return []
     await page.get_by_role("link", name="Upcoming").click()
     event_urls: list[str] = []
     for event_number in range(1, max_events + 1):
