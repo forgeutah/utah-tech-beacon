@@ -17,6 +17,9 @@ RUN playwright install --with-deps --no-shell chromium
 COPY src src
 RUN uv sync --no-default-groups
 
-EXPOSE 8080
+# PORT may be overridden
+ENV PORT=8080
+EXPOSE "$PORT"
 
-ENTRYPOINT ["python", "-m", "scraping_events.main"]
+COPY entrypoint.sh ./
+ENTRYPOINT ["./entrypoint.sh"]
