@@ -4,7 +4,10 @@ import { useState, useEffect } from "react";
 const emojis = [
   { emoji: "☕", name: "coffee" },
   { emoji: "❤️", name: "heart" },
-  { emoji: "🍺", name: "beer" }
+  { emoji: "🍺", name: "beer" },
+  { emoji: "💡", name: "lightbulb" },
+  { emoji: "🔧", name: "wrench" },
+  { emoji: "⚡", name: "lightning" }
 ];
 
 export default function Footer() {
