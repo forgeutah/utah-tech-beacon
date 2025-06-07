@@ -6,3 +6,6 @@ verify_jwt = false
 
 [functions.generate-ical]
 verify_jwt = false
+
+[functions.generate-rss]
+verify_jwt = false

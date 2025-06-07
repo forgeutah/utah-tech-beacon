@@ -1,11 +1,11 @@
-
-import { Calendar } from "lucide-react";
+import { Calendar, Rss } from "lucide-react";
 import { useState } from "react";
 import { parseISO, isSameDay, startOfToday } from "date-fns";
 import { EventsTimeline } from "@/components/EventsTimeline";
 import { MultiSelectDropdown } from "@/components/MultiSelectDropdown";
 import { CalendarView } from "@/components/CalendarView";
 import CalendarLinkModal from "@/components/CalendarLinkModal";
+import RssLinkModal from "@/components/RssLinkModal";
 import AddEventModal from "@/components/AddEventModal";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -46,6 +46,7 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [visibleEventCount, setVisibleEventCount] = useState(10);
   const [showCalendarModal, setShowCalendarModal] = useState(false);
+  const [showRssModal, setShowRssModal] = useState(false);
   const [showAddEventModal, setShowAddEventModal] = useState(false);
 
   // Generate iCal URL with current filters
@@ -59,6 +60,19 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
     }
     
     return `https://gocvjqljtcxtcrwvfwez.supabase.co/functions/v1/generate-ical?${params.toString()}`;
+  };
+
+  // Generate RSS URL with current filters
+  const generateRssUrl = () => {
+    const params = new URLSearchParams();
+    if (selectedGroups.length > 0) {
+      params.set('groups', selectedGroups.join(','));
+    }
+    if (selectedTags.length > 0) {
+      params.set('tags', selectedTags.join(','));
+    }
+    
+    return `https://gocvjqljtcxtcrwvfwez.supabase.co/functions/v1/generate-rss?${params.toString()}`;
   };
 
   // Extract all tags from groups and events combined
@@ -138,13 +152,23 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
                   )}
                 </div>
                 
-                <button
-                  onClick={() => setShowCalendarModal(true)}
-                  className="flex items-center gap-2 px-4 py-2 text-sm bg-primary/10 text-primary border border-primary rounded-md hover:bg-primary hover:text-black transition-colors"
-                >
-                  <Calendar className="w-4 h-4" />
-                  iCal
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowCalendarModal(true)}
+                    className="flex items-center gap-2 px-4 py-2 text-sm bg-primary/10 text-primary border border-primary rounded-md hover:bg-primary hover:text-black transition-colors"
+                  >
+                    <Calendar className="w-4 h-4" />
+                    iCal
+                  </button>
+                  
+                  <button
+                    onClick={() => setShowRssModal(true)}
+                    className="flex items-center gap-2 px-4 py-2 text-sm bg-primary/10 text-primary border border-primary rounded-md hover:bg-primary hover:text-black transition-colors"
+                  >
+                    <Rss className="w-4 h-4" />
+                    RSS
+                  </button>
+                </div>
               </div>
               
               <EventsTimeline 
@@ -184,6 +208,15 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
         selectedTags={selectedTags}
         groups={groups || []}
         generateICalUrl={generateICalUrl}
+      />
+
+      <RssLinkModal
+        open={showRssModal}
+        onOpenChange={setShowRssModal}
+        selectedGroups={selectedGroups}
+        selectedTags={selectedTags}
+        groups={groups || []}
+        generateRssUrl={generateRssUrl}
       />
 
       <AddEventModal 
