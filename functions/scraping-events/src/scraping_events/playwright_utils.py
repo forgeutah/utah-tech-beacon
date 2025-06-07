@@ -20,16 +20,18 @@ _TRACES_DIR = Path("traces")
 
 @asynccontextmanager
 async def launch_browser() -> AsyncGenerator[Browser]:
-    async with (
-        async_playwright() as pw,
-        await pw.chromium.launch(headless=_HEADLESS, channel="chromium") as browser,
-    ):
-        yield browser
+    async with async_playwright() as pw:
+        browser = await pw.chromium.launch(headless=_HEADLESS, channel="chromium")
+        try:
+            yield browser
+        finally:
+            await browser.close()
 
 
 @asynccontextmanager
 async def launch_browser_context(browser: Browser) -> AsyncGenerator[BrowserContext]:
-    async with await browser.new_context(timezone_id="UTC") as browser_context:
+    browser_context = await browser.new_context(timezone_id="UTC")
+    try:
         env = get_env()
         browser_context.set_default_timeout(env.playwright_timeout_ms)
         record_trace = env.debug
@@ -52,17 +54,20 @@ async def launch_browser_context(browser: Browser) -> AsyncGenerator[BrowserCont
                     LOGGER.exception("Failed to save completed Playwright trace for debugging")
                 else:
                     LOGGER.info(f"Playwright trace saved to {trace_path}")
+    finally:
+        await browser_context.close()
 
 
 class PageWrapper:
     @classmethod
     @asynccontextmanager
     async def open(cls, browser: Browser) -> AsyncGenerator[Self]:
-        async with (
-            launch_browser_context(browser) as browser_context,
-            await browser_context.new_page() as page,
-        ):
-            yield cls(page)
+        async with launch_browser_context(browser) as browser_context:
+            page = await browser_context.new_page()
+            try:
+                yield cls(page)
+            finally:
+                await page.close()
 
     def __init__(self, page: Page):
         super().__init__()

@@ -6,7 +6,7 @@ from urllib.parse import ParseResult as ParsedUrl, urlparse
 from playwright.async_api import Browser
 
 from scraping_events.exceptions import UnknownEventProviderError
-from scraping_events.response import Event
+from scraping_events.schemas import Event
 from scraping_events.scrape_meetup import is_meetup_url, scrape_meetup
 
 LOGGER = logging.getLogger(__name__)
@@ -38,4 +38,4 @@ async def scrape_events(browser: Browser, url: str, max_events: int) -> list[Eve
             LOGGER.info(f"Successfully scraped {len(scraped_events)} events from {url}")
             return scraped_events
     # no match
-    raise UnknownEventProviderError(url)
+    raise UnknownEventProviderError(f"Could not determine event provider for provided URL: {url}")

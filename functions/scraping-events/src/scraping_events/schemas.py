@@ -1,6 +1,11 @@
-from typing import Annotated, Literal, Self
+from typing import Literal, Self
 
-from pydantic import AwareDatetime, BaseModel, Field
+from pydantic import AwareDatetime, BaseModel
+
+
+class ScrapeEventsRequest(BaseModel):
+    url: str
+    max_events: int = 3
 
 
 class Event(BaseModel):
@@ -14,8 +19,7 @@ class Event(BaseModel):
     image_url: str | None
 
 
-class ResponseSuccess(BaseModel):
-    type: Literal["success"] = "success"
+class ScrapeEventsResponse(BaseModel):
     events: list[Event]
 
 
@@ -36,6 +40,3 @@ class ResponseError(BaseModel):
             error_class=f"{class_qualifier}{exc_type.__name__}",
             detail=str(exc) or None,
         )
-
-
-type Response = Annotated[ResponseSuccess | ResponseError, Field(discriminator="type")]

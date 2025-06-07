@@ -10,10 +10,12 @@ name = "scraping-events"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
+    "fastapi~=0.115.12",
     "playwright~=1.52.0",
     "pydantic>=2.11.5,<3",
     "pydantic-settings>=2.9.1,<3",
     "tzdata>=2025.2",
+    "uvicorn[standard]~=0.34.3",
 ]
 
 [dependency-groups]
