@@ -1,15 +1,14 @@
 
-import { Coffee, Heart, Beer } from "lucide-react";
 import { useState, useEffect } from "react";
 
-const icons = [
-  { Icon: Coffee, color: "text-amber-700" },
-  { Icon: Heart, color: "text-red-500" },
-  { Icon: Beer, color: "text-yellow-600" }
+const emojis = [
+  { emoji: "☕", name: "coffee" },
+  { emoji: "❤️", name: "heart" },
+  { emoji: "🍺", name: "beer" }
 ];
 
 export default function Footer() {
-  const [currentIconIndex, setCurrentIconIndex] = useState(0);
+  const [currentEmojiIndex, setCurrentEmojiIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
@@ -17,16 +16,15 @@ export default function Footer() {
       setIsAnimating(true);
       
       setTimeout(() => {
-        setCurrentIconIndex((prev) => (prev + 1) % icons.length);
+        setCurrentEmojiIndex((prev) => (prev + 1) % emojis.length);
         setIsAnimating(false);
       }, 150); // Half of animation duration
-    }, 2000); // Change icon every 2 seconds
+    }, 2000); // Change emoji every 2 seconds
 
     return () => clearInterval(interval);
   }, []);
 
-  const CurrentIcon = icons[currentIconIndex].Icon;
-  const iconColor = icons[currentIconIndex].color;
+  const currentEmoji = emojis[currentEmojiIndex].emoji;
 
   return (
     <footer className="w-full text-center py-6 text-muted-foreground text-sm border-t border-border mt-auto">
@@ -37,11 +35,13 @@ export default function Footer() {
         <div>
           Built with{" "}
           <span className="inline-block">
-            <CurrentIcon 
-              className={`inline w-4 h-4 ${iconColor} transition-all duration-300 ${
+            <span 
+              className={`inline-block text-lg transition-all duration-300 ${
                 isAnimating ? 'scale-0 rotate-180' : 'scale-100 rotate-0'
               }`} 
-            />
+            >
+              {currentEmoji}
+            </span>
           </span>
           {" "}by volunteers of{" "}
           <a 
