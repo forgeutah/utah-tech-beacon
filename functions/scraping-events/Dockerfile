@@ -17,4 +17,6 @@ RUN playwright install --with-deps --no-shell chromium
 COPY src src
 RUN uv sync --no-default-groups
 
+EXPOSE 8080
+
 ENTRYPOINT ["python", "-m", "scraping_events.main"]
