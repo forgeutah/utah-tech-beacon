@@ -6,7 +6,7 @@ from urllib.parse import ParseResult as ParsedUrl, urlparse
 from playwright.async_api import Browser
 
 from scraping_events.exceptions import UnknownEventProviderError
-from scraping_events.response import Event
+from scraping_events.schemas import Event
 from scraping_events.scrape_meetup import is_meetup_url, scrape_meetup
 
 LOGGER = logging.getLogger(__name__)

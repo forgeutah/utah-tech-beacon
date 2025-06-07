@@ -7,7 +7,7 @@ from playwright.async_api import Browser, TimeoutError as PlaywrightTimeoutError
 
 from scraping_events.exceptions import ParsingError
 from scraping_events.playwright_utils import PageWrapper
-from scraping_events.response import Event
+from scraping_events.schemas import Event
 
 LOGGER = logging.getLogger(__name__)
 
