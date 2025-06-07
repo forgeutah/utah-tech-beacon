@@ -7,7 +7,7 @@ from scraping_events.playwright_utils import launch_browser
 from scraping_events.schemas import ResponseError, ResponseSuccess
 from scraping_events.scrape_events import scrape_events
 
-set_logging_config()  # not main-guarded, so it's inherited by subprocesses
+set_logging_config(stream="stderr")  # not main-guarded, so it's inherited by subprocesses
 
 LOGGER = logging.getLogger(__name__)
 

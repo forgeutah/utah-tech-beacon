@@ -1,5 +1,6 @@
 import logging
 import logging.config
+from typing import Literal
 
 from scraping_events.env import get_env
 
@@ -10,7 +11,7 @@ _VERBOSE_LOGGERS = [
 ]
 
 
-def set_logging_config():
+def set_logging_config(stream: Literal["stdout", "stderr"] = "stdout"):
     env = get_env()
     config = {
         "version": 1,
@@ -21,9 +22,9 @@ def set_logging_config():
             },
         },
         "handlers": {
-            "stdout": {
+            stream: {
                 "class": "logging.StreamHandler",
-                "stream": "ext://sys.stdout",
+                "stream": f"ext://sys.{stream}",
                 "formatter": "default",
                 "level": logging.DEBUG,
             },
@@ -36,7 +37,7 @@ def set_logging_config():
         },
         "root": {
             "level": logging.WARNING,  # inherited by loggers with level not set otherwise
-            "handlers": ["stdout"],
+            "handlers": [stream],
         },
         "disable_existing_loggers": False,  # allow loggers to be instantiated before this config
     }
