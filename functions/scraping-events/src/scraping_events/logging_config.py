@@ -30,10 +30,16 @@ def set_logging_config(stream: Literal["stdout", "stderr"] = "stdout"):
             },
         },
         "loggers": {
-            _verbose_logger_name: {
-                "level": logging.DEBUG if env.debug else logging.INFO,
-            }
-            for _verbose_logger_name in _VERBOSE_LOGGERS
+            "uvicorn": {
+                "level": logging.INFO,
+                "propagate": True,
+            },
+            **{
+                _verbose_logger_name: {
+                    "level": logging.DEBUG if env.debug else logging.INFO,
+                }
+                for _verbose_logger_name in _VERBOSE_LOGGERS
+            },
         },
         "root": {
             "level": logging.WARNING,  # inherited by loggers with level not set otherwise
