@@ -55,6 +55,7 @@ serve(async (req) => {
         location,
         description,
         tags,
+        group_id,
         groups (
           name,
           status
@@ -70,28 +71,28 @@ serve(async (req) => {
       throw error;
     }
 
-    // Filter events based on selected groups and tags
+    // Filter events based on selected groups and tags using OR logic
     const filteredEvents = events?.filter((event: any) => {
       // Only show event if group is null (unlisted) or group.status is approved
       if (event.groups && event.groups.status !== "approved") {
         return false;
       }
       
-      // Filter by selected groups
-      if (selectedGroups.length > 0) {
-        if (!event.group_id || !selectedGroups.includes(event.group_id)) {
-          return false;
-        }
+      // If no filters are selected, show all events
+      if (selectedGroups.length === 0 && selectedTags.length === 0) {
+        return true;
       }
       
-      // Filter by selected tags
-      if (selectedTags.length > 0) {
-        if (!event.tags || !event.tags.some((tag: string) => selectedTags.includes(tag))) {
-          return false;
-        }
-      }
+      // Check if event matches any selected group
+      const matchesGroup = selectedGroups.length === 0 || 
+        (event.group_id && selectedGroups.includes(event.group_id));
       
-      return true;
+      // Check if event matches any selected tag
+      const matchesTag = selectedTags.length === 0 || 
+        (event.tags && event.tags.some((tag: string) => selectedTags.includes(tag)));
+      
+      // Return true if event matches ANY of the selected groups OR ANY of the selected tags
+      return matchesGroup || matchesTag;
     }) || [];
 
     // Generate iCal content

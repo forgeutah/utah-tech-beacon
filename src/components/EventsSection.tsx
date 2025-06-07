@@ -1,3 +1,4 @@
+
 import { Calendar, Rss } from "lucide-react";
 import { useState } from "react";
 import { parseISO, isSameDay, startOfToday } from "date-fns";
@@ -90,28 +91,14 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
     return eventDate >= today;
   }) || [];
 
-  // Filter events based on selected groups, tags, and date
+  // Filter events based on selected groups, tags, and date using OR logic
   const filteredEvents = upcomingEvents.filter((event: Event) => {
     // Only show event if group is null (unlisted) or group.status is approved
     if (event.groups && event.groups.status !== "approved") {
       return false;
     }
     
-    // Filter by selected groups
-    if (selectedGroups.length > 0) {
-      if (!event.group_id || !selectedGroups.includes(event.group_id)) {
-        return false;
-      }
-    }
-    
-    // Filter by selected tags
-    if (selectedTags.length > 0) {
-      if (!event.tags || !event.tags.some((tag: string) => selectedTags.includes(tag))) {
-        return false;
-      }
-    }
-    
-    // Filter by selected date
+    // Filter by selected date first
     if (selectedDate) {
       const eventDate = parseISO(event.event_date);
       if (!isSameDay(eventDate, selectedDate)) {
@@ -119,7 +106,21 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
       }
     }
     
-    return true;
+    // If no group or tag filters are selected, show all events (that passed the date filter)
+    if (selectedGroups.length === 0 && selectedTags.length === 0) {
+      return true;
+    }
+    
+    // Check if event matches any selected group
+    const matchesGroup = selectedGroups.length === 0 || 
+      (event.group_id && selectedGroups.includes(event.group_id));
+    
+    // Check if event matches any selected tag
+    const matchesTag = selectedTags.length === 0 || 
+      (event.tags && event.tags.some((tag: string) => selectedTags.includes(tag)));
+    
+    // Return true if event matches ANY of the selected groups OR ANY of the selected tags
+    return matchesGroup || matchesTag;
   });
 
   const handleShowMore = () => {
