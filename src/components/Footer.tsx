@@ -55,6 +55,15 @@ export default function Footer() {
           >
             Forge Utah Foundation
           </a>
+          {" "}and with vibes on{" "}
+          <a 
+            href="https://lovable.dev" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            Lovable.dev
+          </a>
         </div>
       </div>
     </footer>
