@@ -21,9 +21,9 @@ def set_logging_config():
             },
         },
         "handlers": {
-            "stderr": {
+            "stdout": {
                 "class": "logging.StreamHandler",
-                "stream": "ext://sys.stderr",
+                "stream": "ext://sys.stdout",
                 "formatter": "default",
                 "level": logging.DEBUG,
             },
@@ -36,7 +36,7 @@ def set_logging_config():
         },
         "root": {
             "level": logging.WARNING,  # inherited by loggers with level not set otherwise
-            "handlers": ["stderr"],
+            "handlers": ["stdout"],
         },
         "disable_existing_loggers": False,  # allow loggers to be instantiated before this config
     }
