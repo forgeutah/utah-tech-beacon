@@ -93,8 +93,17 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
 
   // Filter events based on selected groups, tags, and date using OR logic
   const filteredEvents = upcomingEvents.filter((event: Event) => {
+    console.log('Filtering event:', event.title, {
+      eventGroupId: event.group_id,
+      eventTags: event.tags,
+      selectedGroups,
+      selectedTags,
+      groupStatus: event.groups?.status
+    });
+
     // Only show event if group is null (unlisted) or group.status is approved
     if (event.groups && event.groups.status !== "approved") {
+      console.log('Event filtered out due to group status:', event.title);
       return false;
     }
     
@@ -102,26 +111,55 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
     if (selectedDate) {
       const eventDate = parseISO(event.event_date);
       if (!isSameDay(eventDate, selectedDate)) {
+        console.log('Event filtered out due to date:', event.title);
         return false;
       }
     }
     
     // If no group or tag filters are selected, show all events (that passed the date filter)
     if (selectedGroups.length === 0 && selectedTags.length === 0) {
+      console.log('No filters selected, showing event:', event.title);
       return true;
     }
     
     // Check if event matches any selected group
-    const matchesGroup = selectedGroups.length === 0 || 
-      (event.group_id && selectedGroups.includes(event.group_id));
+    const matchesGroup = selectedGroups.length > 0 && event.group_id && selectedGroups.includes(event.group_id);
     
     // Check if event matches any selected tag
-    const matchesTag = selectedTags.length === 0 || 
-      (event.tags && event.tags.some((tag: string) => selectedTags.includes(tag)));
+    const matchesTag = selectedTags.length > 0 && event.tags && event.tags.some((tag: string) => selectedTags.includes(tag));
     
-    // Return true if event matches ANY of the selected groups OR ANY of the selected tags
-    return matchesGroup || matchesTag;
+    console.log('Filter results for event:', event.title, {
+      matchesGroup,
+      matchesTag,
+      hasGroupFilters: selectedGroups.length > 0,
+      hasTagFilters: selectedTags.length > 0
+    });
+    
+    // If both filters are active, event must match at least one
+    if (selectedGroups.length > 0 && selectedTags.length > 0) {
+      const result = matchesGroup || matchesTag;
+      console.log('Both filters active, OR result:', result);
+      return result;
+    }
+    
+    // If only group filter is active
+    if (selectedGroups.length > 0 && selectedTags.length === 0) {
+      console.log('Only group filter active, result:', matchesGroup);
+      return matchesGroup;
+    }
+    
+    // If only tag filter is active
+    if (selectedTags.length > 0 && selectedGroups.length === 0) {
+      console.log('Only tag filter active, result:', matchesTag);
+      return matchesTag;
+    }
+    
+    // Fallback - should not reach here
+    console.log('Fallback case, showing event:', event.title);
+    return true;
   });
+
+  console.log('Final filtered events count:', filteredEvents.length);
 
   const handleShowMore = () => {
     setVisibleEventCount(prev => prev + 10);
