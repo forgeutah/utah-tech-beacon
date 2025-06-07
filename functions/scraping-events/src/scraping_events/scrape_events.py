@@ -38,4 +38,4 @@ async def scrape_events(browser: Browser, url: str, max_events: int) -> list[Eve
             LOGGER.info(f"Successfully scraped {len(scraped_events)} events from {url}")
             return scraped_events
     # no match
-    raise UnknownEventProviderError(url)
+    raise UnknownEventProviderError(f"Could not determine event provider for provided URL: {url}")
