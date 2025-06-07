@@ -1,6 +1,7 @@
+
 import { Calendar } from "lucide-react";
 import { useState } from "react";
-import { parseISO, isSameDay } from "date-fns";
+import { parseISO, isSameDay, startOfToday } from "date-fns";
 import { EventsTimeline } from "@/components/EventsTimeline";
 import { MultiSelectDropdown } from "@/components/MultiSelectDropdown";
 import { CalendarView } from "@/components/CalendarView";
@@ -68,8 +69,15 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
       .flatMap(group => group.tags || [])
   ])].sort();
 
+  // Filter events to only show today and future events
+  const upcomingEvents = events?.filter((event: Event) => {
+    const eventDate = parseISO(event.event_date);
+    const today = startOfToday();
+    return eventDate >= today;
+  }) || [];
+
   // Filter events based on selected groups, tags, and date
-  const filteredEvents = events?.filter((event: Event) => {
+  const filteredEvents = upcomingEvents.filter((event: Event) => {
     // Only show event if group is null (unlisted) or group.status is approved
     if (event.groups && event.groups.status !== "approved") {
       return false;
@@ -98,7 +106,7 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
     }
     
     return true;
-  }) || [];
+  });
 
   const handleShowMore = () => {
     setVisibleEventCount(prev => prev + 10);
@@ -158,7 +166,7 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
                 Add Event
               </Button>
 
-              {/* Pass filteredEvents instead of events */}
+              {/* Pass upcoming filtered events to calendar */}
               <CalendarView
                 events={filteredEvents}
                 selectedDate={selectedDate}
