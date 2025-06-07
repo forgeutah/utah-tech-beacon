@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import EventsSection from "@/components/EventsSection";
 import Footer from "@/components/Footer";
+import { Event } from "@/types/events";
 
 // Fetch all approved upcoming events and their approved groups from Supabase
 async function fetchUpcomingEvents() {
@@ -75,7 +76,7 @@ const Index = () => {
     
     // Add event tags
     if (events) {
-      events.forEach((event: any) => {
+      events.forEach((event: Event) => {
         if (event.tags && Array.isArray(event.tags)) {
           event.tags.forEach((tag: string) => tagsSet.add(tag));
         }
