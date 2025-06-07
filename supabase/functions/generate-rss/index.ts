@@ -43,7 +43,12 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_ANON_KEY') || ""
     );
 
-    // Build query
+    // Calculate the date 7 days ago
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const sevenDaysAgoString = sevenDaysAgo.toISOString().split('T')[0];
+
+    // Build query with date filter for events not older than 7 days
     let query = supabase
       .from("events")
       .select(`
@@ -64,6 +69,7 @@ serve(async (req) => {
         )
       `)
       .eq("status", "approved")
+      .gte("event_date", sevenDaysAgoString)
       .order("event_date", { ascending: true })
       .order("start_time", { ascending: true });
 
