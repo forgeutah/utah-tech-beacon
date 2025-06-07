@@ -10,4 +10,4 @@ if __name__ == "__main__":
     from scraping_events.env import get_env
 
     env = get_env()
-    uvicorn.run(scraping_events.main_api.api, host="localhost", port=env.port, reload=True, reload_dirs=["src"])
+    uvicorn.run(scraping_events.main_api.api, host="localhost", port=env.port)
