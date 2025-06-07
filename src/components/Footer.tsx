@@ -1,11 +1,11 @@
 
-import { Heart, Beer, Zap } from "lucide-react";
+import { Coffee, Lightbulb, Wrench } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const icons = [
-  { Icon: Heart, color: "text-red-500" },
-  { Icon: Beer, color: "text-amber-500" },
-  { Icon: Zap, color: "text-yellow-500" }
+  { Icon: Coffee, color: "text-amber-600" },
+  { Icon: Lightbulb, color: "text-yellow-500" },
+  { Icon: Wrench, color: "text-slate-600" }
 ];
 
 export default function Footer() {
