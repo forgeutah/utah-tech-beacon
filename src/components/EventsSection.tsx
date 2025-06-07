@@ -1,4 +1,3 @@
-
 import { Calendar, Rss } from "lucide-react";
 import { useState } from "react";
 import { parseISO, isSameDay, startOfToday } from "date-fns";
@@ -23,6 +22,7 @@ interface Event {
   groups?: {
     name: string;
     status: string;
+    tags?: string[];
   } | null;
   group_id?: string;
 }
