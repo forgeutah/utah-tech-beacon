@@ -4,21 +4,71 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Utah Dev Events</title>
-    <meta name="description" content="" />
+    <title>Utah Dev Events - Utah Tech Event Calendar | Developer Meetups & Conferences</title>
+    <meta name="description" content="Discover and share technology events in Utah. The official Utah developer community calendar featuring meetups, conferences, workshops, and tech events across Salt Lake City, Provo, Ogden, and all of Utah." />
+    <meta name="keywords" content="utah dev events, utah tech events, utah developer events, utah dev event calendar, utah tech calendar, salt lake city tech events, utah meetups, utah developer meetups, utah tech conferences, utah programming events, utah software development events, forge utah, utah developer community" />
     <meta name="author" content="Forge Utah Foundation" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://utahdev.events/" />
 
-    <meta property="og:title" content="Utah Dev Events" />
-    <meta property="og:description" content="Utah's local calendar for all developer/technology events" />
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://utahdev.events/" />
+    <meta property="og:title" content="Utah Dev Events - Utah Tech Event Calendar | Developer Meetups & Conferences" />
+    <meta property="og:description" content="Discover and share technology events in Utah. The official Utah developer community calendar featuring meetups, conferences, workshops, and tech events across Salt Lake City, Provo, Ogden, and all of Utah." />
     <meta property="og:image" content="https://utahdev.events/utah-dev-events.png" />
+    <meta property="og:site_name" content="Utah Dev Events" />
+    <meta property="og:locale" content="en_US" />
 
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://utahdev.events/" />
+    <meta name="twitter:title" content="Utah Dev Events - Utah Tech Event Calendar" />
+    <meta name="twitter:description" content="Discover and share technology events in Utah. The official Utah developer community calendar." />
+    <meta name="twitter:image" content="https://utahdev.events/utah-dev-events.png" />
     <meta name="twitter:site" content="@ForgeUtah" />
-    <meta name="twitter:image" content="https://x.com/ForgeUtah/photo" />
+    <meta name="twitter:creator" content="@ForgeUtah" />
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="theme-color" content="#6366f1" />
+    <meta name="msapplication-TileColor" content="#6366f1" />
+    <meta name="apple-mobile-web-app-title" content="Utah Dev Events" />
+    <meta name="application-name" content="Utah Dev Events" />
+
+    <!-- Structured Data for Events -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Utah Dev Events",
+      "description": "Utah's official developer community calendar for technology events, meetups, and conferences",
+      "url": "https://utahdev.events/",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Forge Utah Foundation",
+        "url": "https://forgeutah.tech"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://utahdev.events/?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      },
+      "keywords": "utah dev events, utah tech events, utah developer events, utah tech calendar, utah meetups, salt lake city tech events",
+      "about": {
+        "@type": "Thing",
+        "name": "Utah Technology Events",
+        "description": "Technology events, developer meetups, and programming conferences in Utah"
+      },
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Developers, Software Engineers, Technology Professionals"
+      }
+    }
+    </script>
 
     <!-- Favicon -->
     <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/favicon.png">
   </head>
 
   <body>
@@ -28,4 +78,3 @@
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
