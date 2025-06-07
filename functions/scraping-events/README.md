@@ -18,7 +18,7 @@ poe --help  # see defined tasks
 poe lint  # run the task named `lint`
 ```
 
-### Playwright
+## Playwright
 
 [Playwright](https://playwright.dev/python/) is used to interact with websites.
 Please refer to the official docs for help.
@@ -31,3 +31,17 @@ uv run playwright show-trace traces/trace-filename.zip
 # or if your virtual environment is already active in your current shell:
 playwright show-trace traces/trace-filename.zip
 ```
+
+## Running in Docker
+1. Build and start docker container
+    ```bash
+    docker build -t scraping-events .
+    docker run --rm -it --env-file .env -e PORT=8080 -p 8080:8080 scraping-events
+    ```
+2. Open http://localhost:8080/docs in your local web browser  
+    (You may get a warning "localhost:8080 doesn’t support a secure connection with HTTPS")
+3. Expand the collapsible section for `POST /scrape-events`, and click the `[Try it out]` button
+4. Customize the value of the `url` field of the JSON payload
+5. Click the `[Execute]` button
+6. Observe logs in your docker container as the process runs
+7. In the web UI, observe the content of the "Server response" section
