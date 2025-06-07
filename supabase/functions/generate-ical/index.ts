@@ -58,7 +58,8 @@ serve(async (req) => {
         group_id,
         groups (
           name,
-          status
+          status,
+          tags
         )
       `)
       .eq("status", "approved")
@@ -88,8 +89,13 @@ serve(async (req) => {
         (event.group_id && selectedGroups.includes(event.group_id));
       
       // Check if event matches any selected tag
+      // Use event tags if available, otherwise fall back to group tags
+      const eventTagsToCheck = event.tags && event.tags.length > 0 
+        ? event.tags 
+        : (event.groups?.tags || []);
+      
       const matchesTag = selectedTags.length === 0 || 
-        (event.tags && event.tags.some((tag: string) => selectedTags.includes(tag)));
+        eventTagsToCheck.some((tag: string) => selectedTags.includes(tag));
       
       // Return true if event matches ANY of the selected groups OR ANY of the selected tags
       return matchesGroup || matchesTag;

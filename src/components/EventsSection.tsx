@@ -96,6 +96,7 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
     console.log('Filtering event:', event.title, {
       eventGroupId: event.group_id,
       eventTags: event.tags,
+      groupTags: event.groups?.tags,
       selectedGroups,
       selectedTags,
       groupStatus: event.groups?.status
@@ -126,11 +127,17 @@ export default function EventsSection({ events, groups, isLoading, error, allTag
     const matchesGroup = selectedGroups.length > 0 && event.group_id && selectedGroups.includes(event.group_id);
     
     // Check if event matches any selected tag
-    const matchesTag = selectedTags.length > 0 && event.tags && event.tags.some((tag: string) => selectedTags.includes(tag));
+    // Use event tags if available, otherwise fall back to group tags
+    const eventTagsToCheck = event.tags && event.tags.length > 0 
+      ? event.tags 
+      : (event.groups?.tags || []);
+    
+    const matchesTag = selectedTags.length > 0 && eventTagsToCheck.some((tag: string) => selectedTags.includes(tag));
     
     console.log('Filter results for event:', event.title, {
       matchesGroup,
       matchesTag,
+      eventTagsToCheck,
       hasGroupFilters: selectedGroups.length > 0,
       hasTagFilters: selectedTags.length > 0
     });
