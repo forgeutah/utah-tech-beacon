@@ -66,6 +66,7 @@ async def _get_event_details(page_wrapper: PageWrapper, event_url: str) -> Event
     if (await page.get_by_test_id("attend-irl-btn").count()) > 0:
         venue_name_link = page.get_by_test_id("venue-name-link")
         venue_name = await venue_name_link.inner_text()
+        venue_name = venue_name.strip()
         for venue_location_link in (venue_name_link, page.get_by_test_id("map-link")):
             venue_url = await venue_location_link.get_attribute("href")
             if venue_url:
@@ -76,6 +77,11 @@ async def _get_event_details(page_wrapper: PageWrapper, event_url: str) -> Event
         venue_address = re.sub(r"\s*·\s*", ", ", venue_address).strip()
     elif (await page.get_by_test_id("attend-online-btn").count()) > 0:
         venue_name = await page.get_by_test_id("venue-name-value").inner_text()
+        venue_name = venue_name.strip()
+        venue_url = None
+        venue_address = None
+    elif (await page.get_by_test_id("needs-location").count()) > 0:
+        venue_name = None
         venue_url = None
         venue_address = None
     else:
@@ -90,7 +96,7 @@ async def _get_event_details(page_wrapper: PageWrapper, event_url: str) -> Event
         title=event_title,
         description=event_description,
         time=event_time,
-        venue_name=venue_name.strip(),
+        venue_name=venue_name,
         venue_url=venue_url,
         venue_address=venue_address,
         image_url=image_url,

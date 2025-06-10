@@ -13,7 +13,7 @@ class Event(BaseModel):
     title: str
     description: str
     time: AwareDatetime
-    venue_name: str
+    venue_name: str | None
     venue_url: str | None
     venue_address: str | None
     image_url: str | None
