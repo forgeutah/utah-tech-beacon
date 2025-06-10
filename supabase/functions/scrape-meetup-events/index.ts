@@ -22,6 +22,85 @@ interface ScrapeResponse {
   events: ScrapedEvent[];
 }
 
+// Function to create a JWT for Google OAuth
+async function createJWT(serviceAccountKey: any): Promise<string> {
+  const header = {
+    alg: "RS256",
+    typ: "JWT"
+  };
+
+  const now = Math.floor(Date.now() / 1000);
+  const payload = {
+    iss: serviceAccountKey.client_email,
+    scope: "https://www.googleapis.com/auth/cloud-platform",
+    aud: "https://oauth2.googleapis.com/token",
+    exp: now + 3600, // 1 hour
+    iat: now
+  };
+
+  // Encode header and payload
+  const encodedHeader = btoa(JSON.stringify(header)).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  const encodedPayload = btoa(JSON.stringify(payload)).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+
+  // Create signature
+  const textToSign = `${encodedHeader}.${encodedPayload}`;
+  const privateKey = serviceAccountKey.private_key;
+
+  // Import the private key
+  const keyData = privateKey.replace(/-----BEGIN PRIVATE KEY-----/, "")
+    .replace(/-----END PRIVATE KEY-----/, "")
+    .replace(/\s/g, "");
+  
+  const binaryKey = Uint8Array.from(atob(keyData), c => c.charCodeAt(0));
+  
+  const cryptoKey = await crypto.subtle.importKey(
+    "pkcs8",
+    binaryKey,
+    {
+      name: "RSASSA-PKCS1-v1_5",
+      hash: "SHA-256"
+    },
+    false,
+    ["sign"]
+  );
+
+  // Sign the JWT
+  const signature = await crypto.subtle.sign(
+    "RSASSA-PKCS1-v1_5",
+    cryptoKey,
+    new TextEncoder().encode(textToSign)
+  );
+
+  const encodedSignature = btoa(String.fromCharCode(...new Uint8Array(signature)))
+    .replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+
+  return `${textToSign}.${encodedSignature}`;
+}
+
+// Function to get OAuth token using the JWT
+async function getOAuthToken(serviceAccountKey: any): Promise<string> {
+  const jwt = await createJWT(serviceAccountKey);
+
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion: jwt
+    })
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to get OAuth token: ${error}`);
+  }
+
+  const tokenData = await response.json();
+  return tokenData.access_token;
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -34,11 +113,26 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    // Get the scraping service API key (using the correct secret name)
-    const scrapingApiKey = Deno.env.get('MEETUP_SCRAPER_IAM_KEY')
-    if (!scrapingApiKey) {
+    // Get the service account key JSON
+    const serviceAccountKeyJson = Deno.env.get('MEETUP_SCRAPER_IAM_KEY')
+    if (!serviceAccountKeyJson) {
       throw new Error('MEETUP_SCRAPER_IAM_KEY not configured')
     }
+
+    // Parse the service account key
+    let serviceAccountKey;
+    try {
+      serviceAccountKey = JSON.parse(serviceAccountKeyJson);
+    } catch (parseError) {
+      console.error('Error parsing service account key:', parseError);
+      throw new Error('Invalid service account key format. Must be valid JSON.');
+    }
+
+    console.log('Getting OAuth token from Google Cloud IAM...')
+    
+    // Get OAuth token
+    const oauthToken = await getOAuthToken(serviceAccountKey);
+    console.log('Successfully obtained OAuth token')
 
     console.log('Starting event scraping process...')
 
@@ -67,12 +161,12 @@ serve(async (req) => {
       console.log(`Processing group: ${group.name} (${group.meetup_link})`)
 
       try {
-        // Call the scraping service
+        // Call the scraping service with OAuth token
         const scrapeResponse = await fetch('https://utah-dev-events-839851813394.us-west3.run.app/scrape-events', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${scrapingApiKey}`
+            'Authorization': `Bearer ${oauthToken}`
           },
           body: JSON.stringify({
             url: group.meetup_link,
