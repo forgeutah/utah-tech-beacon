@@ -22,6 +22,32 @@ interface ScrapeResponse {
   events: ScrapedEvent[];
 }
 
+// Function to convert UTC to Mountain Time
+function convertUtcToMountainTime(utcDateTimeString: string): { eventDate: string; startTime: string } {
+  const utcDate = new Date(utcDateTimeString);
+  
+  // Create a new date in Mountain Time
+  // Mountain Time is UTC-7 (MDT) or UTC-8 (MST)
+  // We'll use Intl.DateTimeFormat to handle DST automatically
+  const mountainTimeString = utcDate.toLocaleString("en-US", {
+    timeZone: "America/Denver",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  });
+
+  // Parse the formatted string to extract date and time
+  const [datePart, timePart] = mountainTimeString.split(", ");
+  const [month, day, year] = datePart.split("/");
+  const eventDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  const startTime = timePart;
+
+  return { eventDate, startTime };
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -85,10 +111,9 @@ serve(async (req) => {
         for (const scrapedEvent of scrapeData.events || []) {
           totalEventsProcessed++
 
-          // Parse the event date and time
-          const eventDateTime = new Date(scrapedEvent.time)
-          const eventDate = eventDateTime.toISOString().split('T')[0]
-          const startTime = eventDateTime.toTimeString().split(' ')[0].substring(0, 5)
+          // Convert UTC datetime to Mountain Time
+          const { eventDate, startTime } = convertUtcToMountainTime(scrapedEvent.time)
+          console.log(`Converted UTC time ${scrapedEvent.time} to Mountain Time: ${eventDate} ${startTime}`)
 
           // Check if event already exists (by URL)
           const { data: existingEvents, error: checkError } = await supabase
