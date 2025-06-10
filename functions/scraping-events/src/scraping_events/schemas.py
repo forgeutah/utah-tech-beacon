@@ -15,7 +15,7 @@ class Event(BaseModel):
     time: AwareDatetime
     venue_name: str
     venue_url: str | None
-    venue_address: str
+    venue_address: str | None
     image_url: str | None
 
 
