@@ -1,9 +1,13 @@
 import dotenv
 
+# load env vars before even importing anything from `scraping_events`
+dotenv.load_dotenv()
+
 if __name__ == "__main__":
-    # load env vars before even importing anything from `scraping_events`
-    dotenv.load_dotenv()
+    import uvicorn
 
-    from scraping_events.main import main
+    import scraping_events.main_api
+    from scraping_events.env import get_env
 
-    main()
+    env = get_env()
+    uvicorn.run(scraping_events.main_api.api, host="localhost", port=env.port)

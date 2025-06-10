@@ -4,18 +4,18 @@ from argparse import ArgumentParser
 
 from scraping_events.logging_config import set_logging_config
 from scraping_events.playwright_utils import launch_browser
-from scraping_events.response import ResponseError, ResponseSuccess
+from scraping_events.schemas import ResponseError, ScrapeEventsResponse
 from scraping_events.scrape_events import scrape_events
 
-set_logging_config()  # not main-guarded, so it's inherited by subprocesses
+set_logging_config(stream="stderr")  # not main-guarded, so it's inherited by subprocesses
 
 LOGGER = logging.getLogger(__name__)
 
 
-async def _main_async(url: str, max_events: int) -> ResponseSuccess:
+async def _main_async(url: str, max_events: int) -> ScrapeEventsResponse:
     async with launch_browser() as browser:
         events = await scrape_events(browser, url, max_events)
-        return ResponseSuccess(events=events)
+        return ScrapeEventsResponse(events=events)
 
 
 def main():

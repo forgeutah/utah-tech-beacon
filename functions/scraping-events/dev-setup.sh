@@ -15,6 +15,7 @@ if ! [ -f .env ] ; then
     echo "Seeding .env file..."
     {
         echo "DEBUG=1"
-        echo "PLAYWRIGHT_TIMEOUT_MS=5000"
+        echo "PLAYWRIGHT_TIMEOUT_MS=10000"
+        echo "PORT=8080"
     } > .env
 fi
