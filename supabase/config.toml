@@ -9,3 +9,6 @@ verify_jwt = false
 
 [functions.generate-rss]
 verify_jwt = false
+
+[functions.scrape-meetup-events]
+verify_jwt = false
