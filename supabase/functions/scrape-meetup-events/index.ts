@@ -34,10 +34,10 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    // Get the scraping service API key
-    const scrapingApiKey = Deno.env.get('SCRAPING_API_KEY')
+    // Get the scraping service API key (using the correct secret name)
+    const scrapingApiKey = Deno.env.get('MEETUP_SCRAPER_IAM_KEY')
     if (!scrapingApiKey) {
-      throw new Error('SCRAPING_API_KEY not configured')
+      throw new Error('MEETUP_SCRAPER_IAM_KEY not configured')
     }
 
     console.log('Starting event scraping process...')
